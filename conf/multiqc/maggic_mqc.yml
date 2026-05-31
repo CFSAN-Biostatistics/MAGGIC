@@ -17,6 +17,14 @@ skip_versions_section: true
 disable_version_detection: true
 show_version_header: false
 report_section_order:
+    MAGGIC-RESULTS-DATASUM_datasum_summary:
+        order: -895
+    MAGGIC-RESULTS-CHROMOSOME_collated_table:
+        order: -896
+    MAGGIC-RESULTS-PLASMID_collated_table:
+        order: -896
+    MAGGIC-RESULTS-VIRUS_collated_table:
+        order: -896
     MAGGIC-RESULTS_collated_table:
         order: -897
     MAGGIC-SKIPPEDBINS_collated_table:

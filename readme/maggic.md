@@ -11,6 +11,7 @@
 - [Database Requirements](#database-requirements)
 - [Pipeline Overview](#pipeline-overview)
 - [Multi-Sample Binning with Strata Control](#multi-sample-binning-with-strata-control)
+- [MAGGIC Results](#maggic-results)
 - [Usage and Examples](#usage-and-examples)
   - [Input](#input)
   - [Output](#output)
@@ -75,33 +76,43 @@
 
 ## Multi-Sample Binning with Strata Control
 
-MAGGIC implements **strata-limited multi-sample binning**, a computationally efficient approach that dramatically improves **MAG** recovery while keeping alignment counts tractable for large cohorts.
+MAGGIC implements **strata-limited multi-sample binning**, a computationally efficient approach that improves **MAG** recovery while keeping alignment counts tractable for large cohorts.
 
-Multi-sample binning works by aligning reads from multiple samples against every assembled contig set, providing binning tools (**VAMB**, **SemiBin2**, **MetaBat 2**) with rich cross-sample coverage profiles. As shown by <a href="https://doi.org/10.1038/s41467-025-57957-6" target="_blank">Han <em>et al</em>. 2025</a>, this approach recovers **41-43% more species and strains** compared to single-sample binning including rare taxa, near-complete strains, and antibiotic resistance gene hosts that single-sample binning misses entirely.
+Multi-sample binning works by aligning reads from multiple samples against every assembled contig set, providing binning tools (**VAMB**, **SemiBin2**, **MetaBat 2**) with cross-sample coverage profiles. As shown by <a href="https://doi.org/10.1038/s41467-025-57957-6" target="_blank">Han <em>et al</em>. 2025</a>, this approach recovers **41-43% more species and strains** compared to single-sample binning, including rare taxa and antibiotic resistance gene hosts.
 
-However, traditional all-vs-all alignment produces N² BAM files (50 samples = 2,500 alignments; 100 samples = 10,000 alignments and so on), which quickly becomes computationally intractable. Coverage diversity **saturates around 20-30 samples** for most metagenomic cohorts; beyond that, you gain marginal improvement at exponentially increasing computational cost (<a href="https://doi.org/10.1038/s41467-025-57957-6" target="_blank">Han <em>et al</em>. 2025</a>; <a href="https://doi.org/10.1038/s41587-020-00777-4" target="_blank">Nissen <em>et al</em>. 2021</a>; <a href="https://doi.org/10.3389/fmicb.2022.869135" target="_blank">Haryono <em>et al</em>. 2022</a>).
+However, traditional all-vs-all alignment produces N² BAM files (50 samples = 2,500 alignments; 100 samples = 10,000 alignments), which quickly becomes computationally intractable. Coverage diversity **saturates around 20-30 samples** for most metagenomic experiments; beyond that, marginal improvement occurs at exponentially increasing computational cost (<a href="https://doi.org/10.1038/s41467-025-57957-6" target="_blank">Han <em>et al</em>. 2025</a>; <a href="https://doi.org/10.1038/s41587-020-00777-4" target="_blank">Nissen <em>et al</em>. 2021</a>; <a href="https://doi.org/10.3389/fmicb.2022.869135" target="_blank">Haryono <em>et al</em>. 2022</a>).
 
 ### How It Works
 
-MAGGIC solves this with a strata-based approach controlled by two parameters:
+MAGGIC selects a subset of `strata_size` samples (default 15) and aligns their reads to every assembly, producing `strata_size × N` BAM files instead of N². The selection uses **staggered sampling**, which distributes the selected samples uniformly across the full sorted sample list. This avoids the geographic selection bias introduced by `MAGGIC` `v0.3.0`'s first-N sequential selection. For example, in runs where sample IDs encode spatial information (state prefixes, site codes, collection dates), taking the first N samples concentrates coverage from a single region. Since geographic distance is the primary driver of beta diversity in environmental samples (<a href="https://doi.org/10.1038/s41467-024-55425-1" target="_blank">Cheng <em>et al</em>. 2024</a>; <a href="https://doi.org/10.1128/mbio.02844-24" target="_blank">Peng <em>et al</em>. 2025</a>), coverage profiles from a clustered subset distort the co-abundance patterns that binning algorithms learn.
+
+For example, with 500 samples and `strata_size` = 15:
+
+| Method | Selected indices | Geographic spread |
+|--------|-----------------|-------------------|
+| First-N (sequential) | 0, 1, 2, 3, ... 14 | 1-2 states if IDs are alphabetically ordered by geography |
+| Staggered intervals | 0, 33, 66, 99, ... 483 | ~15 states evenly distributed |
+
+The selected strata samples may potentially represent the full cohort diversity, which matters because the binning algorithms (VAMB's variational autoencoder, MetaBAT 2's coverage clustering, SemiBin2's graph neural network) learn from these co-abundance patterns (<a href="https://doi.org/10.1038/s41587-020-00777-4" target="_blank">Nissen <em>et al</em>. 2021</a>; <a href="https://doi.org/10.1038/s41467-025-57957-6" target="_blank">Han <em>et al</em>. 2025</a>).
+
+The approach is controlled by two parameters:
 
 | Parameter | Default | Description |
 |-----------|---------|-------------|
 | `--multi_sample_strata` | `true` | Enable strata-limited mode (`true` by default. Set `false` for full all-vs-all) |
 | `--strata_size` | `15` | Number of samples whose reads are aligned to each assembly |
 
-Instead of aligning all N samples to all N assemblies (N² BAMs), MAGGIC selects `strata_size` samples and aligns their reads to every assembly, producing `strata_size × N` BAM files.
+### Computational Time
 
-### Performance Comparison
-
-| Samples | Full All-vs-All | Strata (15) | Reduction |
+| Samples | Full All-vs-All | Strata (15) | `MAGGIC` Computational Time Reduction |
 |---------|----------------|-------------|-----------|
 | 30 | 900 BAMs | 450 BAMs | 2x |
 | 50 | 2,500 BAMs | 750 BAMs | 3.3x |
 | 100 | 10,000 BAMs | 1,500 BAMs | 6.7x |
 | 200 | 40,000 BAMs | 3,000 BAMs | 13.3x |
+| 500 | 250,000 BAMs | 7,500 BAMs | 33.3x |
 
-The strata size of 15 is the default because it sits at the sweet spot: enough samples for robust cross-sample coverage profiles, yet small enough to keep compute times reasonable. For highly diverse cohorts (ex, environmental samples from disparate locations), you may want to increase `--strata_size` to 20-30. For homogeneous cohorts (ex, clinical samples from the same body site), 10-15 is sufficient.
+The strata size of 15 is the default because it balances cross-sample coverage diversity with compute cost. For highly diverse cohorts (e.g., environmental samples from disparate locations), increase `--strata_size` to 20-30. For homogeneous cohorts (e.g., clinical samples from the same body site), 10-15 is sufficient.
 
 ```bash
 ./cpipes \
@@ -112,6 +123,138 @@ The strata size of 15 is the default because it sits at the sweet spot: enough s
     -profile singularity \
     -resume
 ```
+
+\
+&nbsp;
+
+## MAGGIC Results
+
+The primary outputs of the `MAGGIC` pipeline are produced by [bin/maggic_results.py](../bin/maggic_results.py), which aggregates quality metrics, taxonomic classification, mobile genetic element detection, and AMR profiling from all binning tools into a set of structured results.
+
+### MultiQC HTML Report
+
+The `MAGGIC` pipeline generates an interactive **MultiQC HTML report** that consolidates all pipeline outputs into a single browsable file.
+
+Example:
+
+![MAGGIC Data Summary](../assets/maggic_datasum_cards.png)
+
+The **Data Summary** cards provide a quick overview:
+
+- **Bin Classification**: Total bins detected, and breakdown by bin type (Chromosome, Plasmid, Mixed, Virus MAGs)
+- **Bacterial Confidence**: High/Medium/Low confidence bins based on `CheckM2` quality thresholds
+- **Antimicrobial Resistance**: Total AMR genes detected and unique AMR classes
+- **Top 10 Taxa**: Most abundant genera across all bins
+
+The rest of the report is rendered with the following main results' sections:
+
+- **Chromosome Table**: Sortable `Chromosome_MAG` rows.
+- **Plasmid Table**: Sortable `Plasmid_MAG` and `Mixed_MAG` rows.
+- **Virus Table**: Sortable `Virus_MAG` rows.
+- **Sequence Quality Reports**: Your reads' quality reports from `fastp` or `filtlong` (`filtlong` not implemented yet).
+
+### Output Files (`maggic_results` folder)
+
+`maggic_results.py` produces the following files:
+
+| File | Description |
+|------|-------------|
+| `maggic-results.tsv` | Full 30-column results table (all bins, all columns) |
+| `maggic-results-chromosome.tsv` | `Chromosome_MAG` bins only, with chromosome-relevant columns (15 columns) |
+| `maggic-results-plasmid.tsv` | `Plasmid_MAG` and `Mixed_MAG` bins, with plasmid-relevant columns (21 columns) |
+| `maggic-results-virus.tsv` | `Virus_MAG` bins only, with virus-relevant columns (14 columns) |
+| `maggic-globalabundance.tsv` | Merged `CoverM` coverage matrix (rows=bins, columns=samples) |
+
+Each results' table excludes irrelevant columns so that you can see only the fields appropriate for that bin type.
+
+| Column | Source | Calculation |
+|--------|--------|-------------|
+| `Name` | `MAGGIC` bin name | Bin identifier from `Binette` quality report |
+| `Bacterial_Confidence` | `MAGGIC` | Assigned based on quality and taxonomy thresholds (see [Bacterial_Confidence Thresholds](#bacterial_confidence-thresholds)) |
+| `Taxonomy` | `GTDB-Tk` `classify_wf` | Full GTDB taxonomy string from `release232` classification |
+| `Completeness` | `Binette` quality report | `CheckM2` completion percentage |
+| `Contamination` | `Binette` quality report | `CheckM2` contamination percentage |
+| `Closest_Ref_ANI` | `GTDB-Tk` | Average nucleotide identity to closest reference genome |
+| `Closest_Ref_AF` | `GTDB-Tk` | Alignment fraction to closest reference genome |
+| `Genome_Size` | `Binette` quality report | Total bin length in base pairs |
+| `Total_Contigs` | `Binette` quality report | Number of contigs in the bin |
+| `GC_Content` | Not implemented yet in `MAGGIC` | `NA` (placeholder value) |
+| `N50` | `Binette` quality report | Contig N50 |
+| `Coding_Density` | `Binette` quality report | Fraction of bin annotated as coding |
+| `Plasmid_Fraction` | `Binette` quality report + `geNomad` `plasmid_summary.tsv` | Fraction of total contigs with plasmid_score >= 0.75 (uses `Binette` contig_count as denominator, not `plasmid_summary.tsv` row count) |
+| `Plasmid_Length_Weighted_Score` | `geNomad` `plasmid_summary.tsv` | Length-weighted mean plasmid_score: `sum(score_i * length_i) / sum(length_i)`. Falls back to simple mean if lengths unavailable. `PlasMAAG` approach (<a href="https://pubmed.ncbi.nlm.nih.gov/41639269/" target="_blank">Lindez <em>et al</em>. 2026</a>). In plasmid TSV output, column is renamed to `Length_Weighted_Score` |
+| `Virus_Length_Weighted_Score` | `geNomad` `virus_summary.tsv` | Length-weighted mean virus_score: `sum(score_i * length_i) / sum(length_i)`. Falls back to simple mean if lengths unavailable. In virus TSV output, column is renamed to `Length_Weighted_Score` |
+| `Plasmid_Signal_Uniformity` | `geNomad` `plasmid_summary.tsv` | How uniform the plasmid signal is across contigs. High if length-weighted score >= 0.9 AND min score >= 0.8; Medium if length-weighted score >= 0.7 AND min score >= 0.5; Low otherwise |
+| `Virus_Count` | `geNomad` `virus_summary.tsv` | Number of viral/viral-like contigs (phages, proviruses, other MGEs) |
+| `High_Conf_Viruses` | `geNomad` `virus_summary.tsv` | Contigs with virus_score >= 0.9 AND FDR <= 10% |
+| `Virus_Signal_Uniformity` | `geNomad` `virus_summary.tsv` | How uniform the viral signal is across contigs. High if length-weighted score >= 0.9 AND min score >= 0.8 AND no proviruses; Medium if proviruses present with high scores, or length-weighted score >= 0.7 AND min score >= 0.5; Low otherwise. Proviruses (integrated prophages) reduce confidence from High to Medium (<a href="https://doi.org/10.1038/s41587-023-01953-y" target="_blank">Camargo <em>et al</em>. 2024</a>) |
+| `Provirus_Count` | `geNomad` `virus_summary.tsv` | Contigs with topology == `Provirus`; potentially physically integrated into the bin |
+| `Provirus_Fraction` | `geNomad` `virus_summary.tsv` | `provirus_count / virus_count` |
+| `Mobility_Potential` | `MAGGIC` | Pipe-separated evidence summary: `plasmid:High\|virus:Low\|proviruses:2\|mob:Relaxed,Mobilized` where `mob` types come from `geNomad` `plasmid_summary.tsv`. Components appended only if present; `none` if no MGE evidence |
+| `Virus_Taxonomy` | `geNomad` `virus_summary.tsv` | Semicolon-separated unique virus taxonomy strings |
+| `Plasmid_Count` | `geNomad` `plasmid_summary.tsv` | Number of plasmid contigs |
+| `High_Conf_Plasmids` | `geNomad` `plasmid_summary.tsv` | Contigs with plasmid_score >= 0.9 AND FDR <= 10% |
+| `Conjugation_Genes` | `geNomad` `plasmid_summary.tsv` | Semicolon-separated mobilization gene types |
+| `AMR_Gene_Count` | `AMRFinderPlus` | Number of hits with Type == "AMR" or Type == "STRESS" (excludes DISINFECTANT, HEAVY_METAL) |
+| `AMR_Classes` | `AMRFinderPlus` | Semicolon-separated unique AMR classes |
+| `AMR_Genes` | `AMRFinderPlus` | Semicolon-separated unique gene symbols |
+
+### `MAGGIC` Bacterial_Confidence Thresholds
+
+| Level | Completeness | Contamination | ANI | AF |
+|-------|-------------|---------------|-----|----|
+| **High** | >= 90% | < 5% | >= 95% | >= 0.65 |
+| **Medium** | >= 50% | < 10% | >= 80% | >= 0.50 |
+| **Low** | below Medium thresholds | | | |
+
+Thresholds are configurable via CLI options (`--high-comp`, `--high-contam`, `--high-ani`, `--high-af`, `--med-comp`, `--med-contam`, `--med-ani`, `--med-af`).
+
+### `MAGGIC` Bin_Type Classification
+
+Bins are classified using a multi-signal approach within `MAGGIC` based on `geNomad` reported scores, with a biologically grounded completeness filter.
+
+**geNomad plasmid classification**: Precision of 70.8% (<a href="https://doi.org/10.1038/s41587-023-01953-y" target="_blank">Camargo <em>et al</em>. 2024</a>), meaning nearly one third of contigs called plasmid are potentially false positives. Sensitivity is 89.8%. In contrast, `geNomad` virus classification is strong (MCC 95.3%, F1 97.3%). **geNomad runs in default mode** so that ALL contigs receive plasmid/virus scores, where possible, which are required for `Plasmid_Signal_Uniformity` calculations. `geNomad`'s official filtering presets: default (min-score=0.70), conservative (min-score=0.80), and relaxed (min-score=0.00).
+
+**Critical: geNomad output files contain only positive_predictions.** The `virus_summary.tsv` contains only contigs detected as viral (proviruses, virions), and `plasmid_summary.tsv` contains only contigs detected as plasmid. Contigs not flagged as viral or plasmid are absent from these files. Therefore, fraction-based thresholds that compare positive predictions to themselves (e.g., `virus_contigs / virus_contigs`) always yield 1.0 and are unreliable. The completeness filter against `CheckM2` markers is the only robust discriminator.
+
+**`MAGGIC` Hard Completeness Filter (completeness >= 50%):** This filter is based on the biology of how completeness is measured. `MAGGIC` uses `CheckM2` for completeness estimates (via `Binette`). `CheckM2` uses ~20,000 KEGG orthologs for chromosomal housekeeping functions (metabolism, DNA replication, transcription, etc.; <a href="https://doi.org/10.1038/s41592-023-02017-3" target="_blank">Chklovski <em>et al</em>. 2023</a>), plus machine learning models trained on chromosomal MAGs. **True plasmids and viruses cannot carry these chromosomal markers**. Therefore, any bin with completeness >= 50% definitely contains chromosomal DNA and `MAGGIC` **NEVER** classifies it as a pure `Plasmid_MAG` or `Virus_MAG`:
+
+| `MAGGIC` Classification | When completeness >= 50% |
+|---------------|-----------|
+| `Mixed_MAG` | `geNomad` `plasmid_summary.tsv` has contigs with plasmid_score >= 0.75 AND count of those contigs / total_contigs >= 0.2 (using `Binette` contig_count as denominator), meaning chromosomal DNA with substantial plasmid content |
+| `Chromosome_MAG` | No contigs with plasmid_score >= 0.75, OR plasmid_fraction < 0.2. Also assigned when `virus_summary.tsv` exists but only proviruses are present (no plasmid signal) proviruses are normal in bacterial chromosomes and do NOT trigger `Virus_MAG` |
+| `Plasmid_MAG` | **Never** assigned when completeness >= 50% |
+| `Virus_MAG` | **Never** assigned when completeness >= 50% |
+
+| `MAGGIC` Classification | When completeness < 50% |
+|---------------|-----------|
+| `Virus_MAG` | geNomad `virus_summary.tsv` has any entries (checked first, since virus model is most reliable at MCC 95.3%) |
+| `Plasmid_MAG` | geNomad `plasmid_summary.tsv` has any entries but virus_summary.tsv has none |
+| `Chromosome_MAG` | neither geNomad plasmid nor virus summaries have entries |
+
+This classification results in split output tables and determines which table in the **MultiQC** report each bin appears in.
+
+### `MAGGIC` Plasmid_Signal_Uniformity
+
+This metric measures how uniformly the plasmid signal is distributed across all contigs in a bin. It uses same scoring as `PlasMAAG` (<a href="https://pubmed.ncbi.nlm.nih.gov/41639269/" target="_blank">Lindez <em>et al</em>. 2026</a>): a length-weighted mean of `plasmid_score` across contigs, combined with the minimum score.
+
+| Level | Length-Weighted Score | Minimum Score |
+|-------|----------------------|---------------|
+| **High** | >= 0.9 | >= 0.8 |
+| **Medium** | >= 0.7 | >= 0.5 |
+| **Low** | below Medium thresholds | |
+
+**High** uniformity means all contigs carry a strong plasmid signal, consistent with a single replicon recovered without chromosomal contamination.
+
+### `MAGGIC` Virus_Signal_Uniformity
+
+Analogous to `Plasmid_Signal_Uniformity`, but for viral contigs. A key difference: **proviruses reduce confidence**. An integrated prophage within a chromosomal bin produces a less informative viral signal than a standalone virus (<a href="https://doi.org/10.1038/s41587-023-01953-y" target="_blank">Camargo <em>et al</em>. 2024</a>).
+
+| Level | Length-Weighted Score | Minimum Score | Proviruses |
+|-------|----------------------|---------------|------------|
+| **High** | >= 0.9 | >= 0.8 | None |
+| **Medium** | High scores with proviruses present (even if >= 0.9/0.8), OR moderate signal (>= 0.7/0.5) | | Any |
+| **Low** | below Medium thresholds | | Any |
 
 \
 &nbsp;
@@ -217,7 +360,7 @@ All outputs for each step are stored inside the folder mentioned with the `--out
 | `genomad/` | Virus and plasmid detection results |
 | `amrfinderplus/` | AMR gene detection results |
 | `coverm_genome/` | Abundance/coverage tables |
-| `maggic_results/` | Aggregated results TSV (`maggic-results.tsv`) |
+| `maggic_results/` | Aggregated results TSVs |
 | `table_summary/` | Summary tables |
 | `maggic-multiqc/` | **MultiQC** HTML report |
 
@@ -371,7 +514,7 @@ Ex: cpipes --pipeline maggic --help fastp,megahit
 --help vamb                                            : Show vamb `bin def` CLI options
 --help binette                                         : Show binette CLI options
 --help gtdbtk                                          : Show gtdbtk classify_wf CLI options
---help abundance                                       : Show coverm `genome` CLI options
+--help abundance                                       : Show CoverM `genome` CLI options
 --help amrfinderplus                                   : Show AMRFinderPlus CLI options
 --help metabat2                                        : Show metabat2 CLI options
 ```

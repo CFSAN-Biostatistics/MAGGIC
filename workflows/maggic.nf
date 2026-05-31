@@ -52,11 +52,15 @@ include { MULTIQC                    } from "${params.modules}${params.fs}multiq
     INPUTS AND ANY CHECKS FOR THE MAGGIC WORKFLOW
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
+
 def reads_platform = 0
 def strata_size = (params.strata_size ?: 15)
 def abn_key = "${params.pipeline}-GlobalAbundance"
 def res_key = "${params.pipeline}-Results"
 def skip_key = "${params.pipeline}-SkippedBins"
+def chrom_key = "${params.pipeline}-Results-Chromosome"
+def plasmid_key = "${params.pipeline}-Results-Plasmid"
+def virus_key = "${params.pipeline}-Results-Virus"
 
 reads_platform += (params.input ? 1 : 0)
 
@@ -152,14 +156,31 @@ workflow MAGGIC {
                 // }
                 .set { ch_mapping_all_v_all }
         } else {
-            // This is synchronous but cache is validated
+            // Systematic staggered sampling: selects strata_size samples
+            // equidistant across the full sorted list to maximize
+            // coverage diversity while preserving cache validity.
             ch_strata_reads
                 .toSortedList { a, b -> a[0].id <=> b[0].id }
                 .flatMap { all_reads ->
-                    all_reads.take( strata_size.toInteger() )
+                    def n = all_reads.size()
+                    def k = strata_size.toInteger()
+
+                    if (n <= k) {
+                        all_reads
+                    } else {
+                        def indices = (0..<k).collect { idx ->
+                            Math.floor(idx * n / k).toInteger()
+                        }
+                        indices.collect { idx -> all_reads[idx] }
+                    }
                 }
                 .combine( MEGAHIT_ASSEMBLE.out.assembly )
                 .set { ch_mapping_all_v_all }
+            
+            // ch_mapping_all_v_all.subscribe( onComplete: { 
+            //     println "Inspect indices..."
+            //     System.exit(0) 
+            // })
 
             // This is asynchronous, but not sure if cache is not invalidated
             // ch_strata_reads
@@ -396,6 +417,21 @@ workflow MAGGIC {
             ch_skipped_samples
                 .mix(
                     MAGGIC_RESULTS.out.results,
+                    MAGGIC_RESULTS.out.chromosome_results
+                        .map { meta, tsv ->
+                            def new_meta = [ id: chrom_key ]
+                            [ new_meta, tsv ]
+                        },
+                    MAGGIC_RESULTS.out.plasmid_results
+                        .map { meta, tsv ->
+                            def new_meta = [ id: plasmid_key ]
+                            [ new_meta, tsv ]
+                        },
+                    MAGGIC_RESULTS.out.virus_results
+                        .map { meta, tsv ->
+                            def new_meta = [ id: virus_key ]
+                            [ new_meta, tsv ]
+                        },
                     MAGGIC_RESULTS.out.abundance
                         .map { meta, abn ->
                             def new_meta = meta + [id: abn_key]
@@ -429,6 +465,7 @@ workflow MAGGIC {
             ch_multiqc
                 .mix(
                     TABLE_SUMMARY.out.mqc_yml,
+                    MAGGIC_RESULTS.out.mqc_yml,
                     DUMP_SOFTWARE_VERSIONS.out.mqc_yml
                 )
                 .collect( sort: true )

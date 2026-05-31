@@ -15,7 +15,7 @@ It is written in **Nextflow** and is part of the modular data analysis pipelines
 
 ## Software Information
 
-* The current release version is **`v0.3.0`**.
+* The current release version is **`v0.5.0`**.
 * [See the full changelog](https://github.com/CFSAN-Biostatistics/maggic/releases).
 
 \
