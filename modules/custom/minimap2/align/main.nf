@@ -23,7 +23,7 @@ process MINIMAP2_ALIGN {
 
     script:
         def args = task.ext.args ?: ''
-        def prefix = task.ext.prefix ?: "${meta.id}"
+        def prefix = task.ext.prefix ?: "${meta2.id}_v_${meta.id}"
         def bam_output = "${params.minimap2_bam_format}" ? "-a | samtools sort | samtools view -@${task.cpus} -b -h -o ${prefix}.bam; samtools index -@${task.cpus} ${prefix}.bam" : "-o ${prefix}.paf"
         """
         minimap2 \\
