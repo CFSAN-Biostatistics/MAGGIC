@@ -215,16 +215,16 @@ Bins are classified using a multi-signal approach within `MAGGIC` based on `geNo
 
 **geNomad plasmid classification**: Precision of 70.8% (<a href="https://doi.org/10.1038/s41587-023-01953-y" target="_blank">Camargo <em>et al</em>. 2024</a>), meaning nearly one third of contigs called plasmid are potentially false positives. Sensitivity is 89.8%. In contrast, `geNomad` virus classification is strong (MCC 95.3%, F1 97.3%). **geNomad runs in default mode** so that ALL contigs receive plasmid/virus scores, where possible, which are required for `Plasmid_Signal_Uniformity` calculations. `geNomad`'s official filtering presets: default (min-score=0.70), conservative (min-score=0.80), and relaxed (min-score=0.00).
 
-**Critical: geNomad output files contain only positive_predictions.** The `virus_summary.tsv` contains only contigs detected as viral (proviruses, virions), and `plasmid_summary.tsv` contains only contigs detected as plasmid. Contigs not flagged as viral or plasmid are absent from these files. Therefore, fraction-based thresholds that compare positive predictions to themselves (e.g., `virus_contigs / virus_contigs`) always yield 1.0 and are unreliable. The completeness filter against `CheckM2` markers is the only robust discriminator.
+**Note: geNomad output files contain only positive predictions.** The `virus_summary.tsv` contains only contigs detected as viral (proviruses, virions), and `plasmid_summary.tsv` contains only contigs detected as plasmid. Contigs not flagged as viral or plasmid do not appear in these files. Therefore, the completeness filter against `CheckM2` markers is the only discriminator.
 
-**`MAGGIC` Hard Completeness Filter (completeness >= 50%):** This filter is based on the biology of how completeness is measured. `MAGGIC` uses `CheckM2` for completeness estimates (via `Binette`). `CheckM2` uses ~20,000 KEGG orthologs for chromosomal housekeeping functions (metabolism, DNA replication, transcription, etc.; <a href="https://doi.org/10.1038/s41592-023-02017-3" target="_blank">Chklovski <em>et al</em>. 2023</a>), plus machine learning models trained on chromosomal MAGs. **True plasmids and viruses cannot carry these chromosomal markers**. Therefore, any bin with completeness >= 50% definitely contains chromosomal DNA and `MAGGIC` **NEVER** classifies it as a pure `Plasmid_MAG` or `Virus_MAG`:
+**`MAGGIC` Hard Completeness Filter (completeness >= 50%):** This filter is based on the biology of how completeness is measured. `MAGGIC` uses `CheckM2` for completeness estimates (via `Binette`). `CheckM2` uses ~20,000 KEGG orthologs for chromosomal housekeeping functions (metabolism, DNA replication, transcription, etc.; <a href="https://doi.org/10.1038/s41592-023-02017-3" target="_blank">Chklovski <em>et al</em>. 2023</a>), plus machine learning models trained on chromosomal MAGs. Plasmids and viruses typically do not carry these chromosomal markers. Therefore, a bin with completeness >= 50% likely contains chromosomal DNA and `MAGGIC` does not classify it as a pure `Plasmid_MAG` or `Virus_MAG`:
 
 | `MAGGIC` Classification | When completeness >= 50% |
 |---------------|-----------|
 | `Mixed_MAG` | `geNomad` `plasmid_summary.tsv` has contigs with plasmid_score >= 0.75 AND count of those contigs / total_contigs >= 0.2 (using `Binette` contig_count as denominator), meaning chromosomal DNA with substantial plasmid content |
-| `Chromosome_MAG` | No contigs with plasmid_score >= 0.75, OR plasmid_fraction < 0.2. Also assigned when `virus_summary.tsv` exists but only proviruses are present (no plasmid signal) proviruses are normal in bacterial chromosomes and do NOT trigger `Virus_MAG` |
-| `Plasmid_MAG` | **Never** assigned when completeness >= 50% |
-| `Virus_MAG` | **Never** assigned when completeness >= 50% |
+| `Chromosome_MAG` | No contigs with plasmid_score >= 0.75, OR plasmid_fraction < 0.2. Also assigned when `virus_summary.tsv` exists but only proviruses are present (no plasmid signal); proviruses are common in bacterial chromosomes and do not trigger `Virus_MAG` |
+| `Plasmid_MAG` | Not assigned when completeness >= 50% |
+| `Virus_MAG` | Not assigned when completeness >= 50% |
 
 | `MAGGIC` Classification | When completeness < 50% |
 |---------------|-----------|
@@ -244,7 +244,7 @@ This metric measures how uniformly the plasmid signal is distributed across all 
 | **Medium** | >= 0.7 | >= 0.5 |
 | **Low** | below Medium thresholds | |
 
-**High** uniformity means all contigs carry a strong plasmid signal, consistent with a single replicon recovered without chromosomal contamination.
+**High** uniformity suggests all contigs carry a strong plasmid signal, consistent with a single replicon without chromosomal contamination.
 
 ### `MAGGIC` Virus_Signal_Uniformity
 

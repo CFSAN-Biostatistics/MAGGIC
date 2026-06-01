@@ -541,12 +541,12 @@ def compute_virus_signal_uniformity(
     min_score = min(virus_scores)
     has_proviruses = provirus_count > 0
 
-    # Strong signal with NO proviruses -> High confidence single replicon
+    # Strong signal with no proviruses suggests a single replicon
     if lw_score >= 0.9 and min_score >= 0.8:
         if not has_proviruses:
             return "High"
         else:
-            # Proviruses present reduces confidence (integrated prophage)
+            # Proviruses present may reduce confidence (possible integrated prophage)
             return "Medium"
     elif lw_score >= 0.7 and min_score >= 0.5:
         return "Medium"
@@ -603,17 +603,6 @@ def _length_weighted_mean(
         return sum(scores) / len(scores)
 
 
-# Multi-signal bin classification with geNomad false-positive filters.
-# geNomad plasmid precision is only 70.8% (PMID: 37735266), meaning ~29% of
-# predicted plasmids are false positives. Raw contig-level ensemble compounds
-# these errors at the bin level. Completeness >= 50% definitively indicates
-# chromosomal DNA: CheckM2 uses KEGG orthologs for central metabolism, DNA
-# replication, transcription, and translation (PMID: 37500759), plus ML models
-# trained on chromosomal MAGs; true plasmids cannot carry these markers and
-# score near 0% completeness (CheckM tested real plasmids at 0 to 4.2%,
-# PMID: 25977477). A bin with >=50% completeness has chromosomal DNA.
-
-
 def classify_bin_type(
     plasmid_scores: List[float],
     virus_scores: List[float],
@@ -621,28 +610,14 @@ def classify_bin_type(
     contig_count: int = 0,
     genomad_thr: float = 0.75,
 ) -> str:
-    """Classify bin as Plasmid_MAG, Virus_MAG, Mixed_MAG, or Chromosome_MAG.
-
-    Hard filter: bins with completeness >= 50% are NEVER plasmids or viruses.
-    CheckM2 uses KEGG chromosomal markers (PMID: 37500759); true plasmids and
-    viruses cannot carry these and score near 0% completeness
-    (PMID: 25977477). Bins above this threshold contain chromosomal DNA and
-    are classified as Chromosome_MAG or, if they also have mobile element
-    contigs, Mixed_MAG.
-
-    IMPORTANT: geNomad output files contain ONLY positive predictions:
-    virus_summary.tsv has only viral elements (proviruses/virions), and
-    plasmid_summary.tsv has only plasmid-classified contigs. Therefore the
-    fraction of positive elements in these files is always 1.0 for any bin
-    with at least one positive hit. Completeness filter is the only reliable
-    way to distinguish MAGs from true mobile element bins.
     """
-    # Hard filter: completeness >= 50% means the bin contains chromosomal DNA.
-    # CheckM2 completeness uses KEGG orthologs for chromosomal housekeeping
-    # genes (PMID: 37500759). True plasmids and viruses cannot carry these
-    # markers and score near 0% completeness. Therefore a bin with >=50%
-    # completeness is NEVER a pure plasmid or virus MAG; it has chromosomal
-    # DNA. This filter applies BEFORE checking virus or plasmid signals.
+    Classify bin as Plasmid_MAG, Virus_MAG, Mixed_MAG, or Chromosome_MAG.
+
+    Completeness >= 50% likely indicates chromosomal DNA: CheckM2 uses
+    chromosomal markers (PMID: 37500759); bins above this threshold may be
+    Chromosome_MAG or, if they carry plasmid contigs with sufficient
+    fraction, Mixed_MAG.
+    """
     is_chromosomal_quality = completeness >= 50.0
 
     # No mobile element signal at all; pure chromosomal bin
@@ -650,15 +625,11 @@ def classify_bin_type(
         return "Chromosome_MAG"
 
     if is_chromosomal_quality:
-        # Chromosomal DNA with mobile element signals.
-        # Provirus-only -> Chromosome_MAG (prophages are normal in bacteria).
         if not plasmid_scores:
             return "Chromosome_MAG"
 
-        # Has both chromosomal DNA and plasmid contigs. Compute plasmid fraction
-        # using TOTAL contig count from quality report (not from plasmid_summary,
-        # which contains only positive predictions). Only contigs with plasmid_score
-        # >= 0.75 are counted as plasmid, matching the Plasmid_Fraction column.
+        # Fraction uses total contig count, not plasmid_summary row count
+        # (geNomad tsv has only positives). Threshold 0.75 matches Plasmid_Fraction.
         plasmid_high = sum(1 for s in plasmid_scores if s >= 0.75)
         plasmid_fraction = plasmid_high / max(contig_count, 1)
         if plasmid_fraction >= 0.2:
@@ -666,7 +637,7 @@ def classify_bin_type(
         else:
             return "Chromosome_MAG"
 
-    # Low completeness bins: can be true plasmids or viruses
+    # Low completeness bins may be plasmid or virus bins
     # Virus model is more reliable (MCC 95.3% vs plasmid MCC 70.8%)
     if virus_scores:
         return "Virus_MAG"
@@ -920,8 +891,8 @@ def aggregate_all(
         )
 
         # Plasmid_Fraction: proportion of contigs with plasmid_score >= 0.75.
-        # Uses Binette contig_count as denominator, NOT plasmid_summary.tsv row count,
-        # since geNomad plasmid_summary.tsv contains only positive predictions.
+        # Denominator is Binette contig_count, not plasmid_summary row count
+        # (geNomad tsv has only positives).
         contig_total = int(_safe_float(q.get("contig_count", "0")))
         if contig_total > 0:
             plasmid_high = sum(1 for s in p["plasmid_scores"] if s >= 0.75)
@@ -969,7 +940,7 @@ def aggregate_all(
             p["conjugation_types"],
         )
 
-        # Bin_Type: multi-signal classification with completeness filter
+        # Bin_Type: classification from plasmid/virus signals and completeness
         row["Bin_Type"] = classify_bin_type(
             p["plasmid_scores"],
             v["virus_scores"],
@@ -1068,8 +1039,8 @@ VIRUS_COLS: List[str] = [
     "Virus_Taxonomy",
 ]
 
-# Both plasmid and virus tables output their length-weighted score as "Length_Weighted_Score"
-# for a unified column name across split tables.
+# Plasmid and virus tables rename the length-weighted score to "Length_Weighted_Score"
+# so the column name matches across split tables.
 VIRUS_COLS_OUTPUT_NAMES: Dict[str, str] = {
     "Virus_Length_Weighted_Score": "Length_Weighted_Score",
 }
