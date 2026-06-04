@@ -8,17 +8,17 @@ It integrates multiple binning algorithms (VAMB, SemiBin2, MetaBat 2) followed b
 
 ## Contents
 
-- [[1. Installation-Requirements]]
-- [[2. Database-Requirements]]
-- [[3. Usage-Examples]]
-  - [[3.1. Multi-Sample-Binning]]
-  - [[3.2. CLI-Reference]]
-- [[4. Results-Overview]]
-  - [[4.1. Bin-Classification]]
-  - [[4.2. Plasmid-Virus-Metrics]]
-  - [[4.3. AMR-Profiling]]
-  - [[4.4. MAGGIC-Plots]]
-- [[5. Future Roadmap]](#future-roadmap)
+- [1. Installation Requirements](Installation-Requirements.md)
+- [2. Database Requirements](Database-Requirements.md)
+- [3. Usage Examples](Usage-Examples.md)
+  - [3.1. Multi-Sample Binning](Multi-Sample-Binning.md)
+  - [3.2. CLI Reference](CLI-Reference.md)
+- [4. Results Overview](Results-Overview.md)
+  - [4.1. Bin Classification](Bin-Classification.md)
+  - [4.2. Plasmid & Virus Metrics](Plasmid-Virus-Metrics.md)
+  - [4.3. AMR Profiling](AMR-Profiling.md)
+  - [4.4. MAGGIC Plots](MAGGIC-Plots.md)
+- [5. Future Roadmap](#future-roadmap)
 
 ## Future Roadmap
 
