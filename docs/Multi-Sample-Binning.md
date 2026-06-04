@@ -8,7 +8,7 @@ However, traditional all-vs-all alignment produces N&sup2; BAM files (50 samples
 
 ## How It Works
 
-MAGGIC selects a subset of `strata_size` samples (default 15) and aligns their reads to every assembly, producing `strata_size &times; N` BAM files instead of N&sup2;. Selection uses **staggered sampling**, which distributes selected samples uniformly across the full sorted sample list.
+MAGGIC selects a subset of `strata_size` samples (default 15) and aligns their reads to every assembly, producing `strata_size` &times; `N` BAM files instead of N&sup2;. Selection uses **staggered sampling**, which distributes selected samples uniformly across the full sorted sample list.
 
 This avoids geographic selection bias. In runs where sample IDs encode spatial information (state prefixes, site codes, collection dates), taking the first N samples concentrates coverage from a single region. Geographic distance is the primary driver of beta diversity in environmental samples (<a href="https://doi.org/10.1038/s41467-024-55425-1" target="_blank">Cheng *et al*. 2024</a>; <a href="https://doi.org/10.1128/mbio.02844-24" target="_blank">Peng *et al*. 2025</a>).
 
