@@ -16,13 +16,14 @@ process MAGGIC_RESULTS {
                 path(binette_res)
 
     output:
-        tuple val(meta), path("maggic-results.tsv")        , emit: results
-        tuple val(meta), path("*-chromosome.tsv")          , emit: chromosome_results
-        tuple val(meta), path("*-plasmid.tsv")             , emit: plasmid_results
-        tuple val(meta), path("*-virus.tsv")               , emit: virus_results
-        tuple val(meta), path("maggic-globalabundance.tsv"), emit: abundance
-        path "*_mqc.yml"                                   , emit: mqc_yml
-        path "versions.yml"                                , emit: versions
+        tuple val(meta), path("maggic-results.tsv")                 , emit: results
+        tuple val(meta), path("*-chromosome.tsv")                   , emit: chromosome_results
+        tuple val(meta), path("*-plasmid.tsv")                      , emit: plasmid_results
+        tuple val(meta), path("*-virus.tsv")                        , emit: virus_results
+        tuple val(meta), path("maggic-globalabundance.tsv")         , emit: abundance
+        tuple val(meta), path("ALL_REFINED_BINS_QUALITY_REPORT.tsv"), emit: binette_results
+        path "*_mqc.yml"                                            , emit: mqc_yml
+        path "versions.yml"                                         , emit: versions
 
     when:
         task.ext.when == null || task.ext.when

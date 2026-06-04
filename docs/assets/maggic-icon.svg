@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 768" width="1024" height="768">
+  <defs>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0D1B3E;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1A1040;stop-opacity:1" />
+    </linearGradient>
+
+    <filter id="card-shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="20" flood-color="#000000" flood-opacity="0.35" />
+      <feDropShadow dx="0" dy="2" stdDeviation="8" flood-color="#000000" flood-opacity="0.25" />
+    </filter>
+
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <linearGradient id="helix-green" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#00E5A0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00B4D8;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="helix-blue" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#00B4D8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4361EE;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="rung-gold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#F4A261;stop-opacity:0.8" />
+    </linearGradient>
+
+    <linearGradient id="mag-circle" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00E5A0;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#00B4D8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4361EE;stop-opacity:1" />
+    </linearGradient>
+
+    <radialGradient id="dot-glow-green" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#00E5A0;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#00E5A0;stop-opacity:0.3" />
+    </radialGradient>
+    <radialGradient id="dot-glow-cyan" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#00B4D8;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#00B4D8;stop-opacity:0.3" />
+    </radialGradient>
+    <radialGradient id="dot-gold" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#FFD700;stop-opacity:0.3" />
+    </radialGradient>
+
+    <linearGradient id="arrow-grad" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" style="stop-color:#4361EE;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#00E5A0;stop-opacity:0.8" />
+    </linearGradient>
+
+    <linearGradient id="glass-highlight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.45" />
+      <stop offset="30%" style="stop-color:#FFFFFF;stop-opacity:0.15" />
+      <stop offset="50%" style="stop-color:#FFFFFF;stop-opacity:0.02" />
+      <stop offset="100%" style="stop-color:#FFFFFF;stop-opacity:0" />
+    </linearGradient>
+
+    <linearGradient id="glass-reflection" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.2" />
+      <stop offset="40%" style="stop-color:#FFFFFF;stop-opacity:0.05" />
+      <stop offset="100%" style="stop-color:#FFFFFF;stop-opacity:0" />
+    </linearGradient>
+
+    <linearGradient id="glass-rim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.6" />
+      <stop offset="25%" style="stop-color:#FFFFFF;stop-opacity:0.1" />
+      <stop offset="75%" style="stop-color:#FFFFFF;stop-opacity:0.05" />
+      <stop offset="100%" style="stop-color:#FFFFFF;stop-opacity:0.3" />
+    </linearGradient>
+
+    <filter id="glass-blur" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <clipPath id="icon-clip">
+      <rect x="134" y="34" width="756" height="700" rx="120" ry="120" />
+    </clipPath>
+  </defs>
+
+  <!-- Icon background -->
+  <rect x="134" y="34" width="756" height="700" rx="120" ry="120"
+        fill="url(#bg-grad)" filter="url(#card-shadow)" />
+
+  <g clip-path="url(#icon-clip)">
+
+    <!-- Title -->
+    <text x="512" y="175" text-anchor="middle"
+          font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
+          font-size="140" font-weight="700" fill="white" letter-spacing="8">
+      MAGGIC
+    </text>
+
+    <!-- Tagline -->
+    <text x="512" y="210" text-anchor="middle"
+          font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
+          font-size="10" font-weight="400" fill="#A0B4E0" letter-spacing="2"
+          filter="url(#glow)">
+      METAGENOMICALLY ASSEMBLED GENOME GENERATION WITH INTEGRATED CLASSIFICATION
+    </text>
+
+    <!-- Fragment dots -->
+    <g filter="url(#glow)" opacity="0.6">
+      <circle cx="280" cy="270" r="6" fill="url(#dot-glow-green)" />
+      <circle cx="320" cy="255" r="4" fill="url(#dot-glow-cyan)" />
+      <circle cx="260" cy="300" r="5" fill="url(#dot-gold)" />
+      <circle cx="350" cy="280" r="3" fill="url(#dot-glow-green)" />
+      <circle cx="290" cy="320" r="7" fill="url(#dot-glow-cyan)" />
+      <circle cx="240" cy="265" r="4" fill="url(#dot-glow-green)" />
+      <circle cx="370" cy="310" r="5" fill="url(#dot-gold)" />
+
+      <circle cx="744" cy="270" r="6" fill="url(#dot-glow-cyan)" />
+      <circle cx="704" cy="255" r="4" fill="url(#dot-glow-green)" />
+      <circle cx="764" cy="300" r="5" fill="url(#dot-gold)" />
+      <circle cx="674" cy="280" r="3" fill="url(#dot-glow-cyan)" />
+      <circle cx="734" cy="320" r="7" fill="url(#dot-glow-green)" />
+      <circle cx="784" cy="265" r="4" fill="url(#dot-glow-cyan)" />
+      <circle cx="654" cy="310" r="5" fill="url(#dot-gold)" />
+    </g>
+
+    <!-- Left DNA helix -->
+    <g filter="url(#glow)">
+      <path d="M 310 260
+               C 310 310, 380 330, 380 380
+               C 380 430, 310 450, 310 500
+               C 310 550, 380 570, 380 620
+               C 380 670, 350 690, 380 720"
+            fill="none" stroke="url(#helix-green)" stroke-width="4" stroke-linecap="round" opacity="0.9"/>
+
+      <path d="M 380 260
+               C 380 310, 310 330, 310 380
+               C 310 430, 380 450, 380 500
+               C 380 550, 310 570, 310 620
+               C 310 670, 340 690, 310 720"
+            fill="none" stroke="url(#helix-blue)" stroke-width="4" stroke-linecap="round" opacity="0.9"/>
+
+      <line x1="315" y1="290" x2="375" y2="290" stroke="url(#rung-gold)" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+      <line x1="325" y1="340" x2="370" y2="340" stroke="url(#rung-gold)" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+      <line x1="315" y1="400" x2="375" y2="400" stroke="url(#rung-gold)" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+      <line x1="325" y1="460" x2="370" y2="460" stroke="url(#rung-gold)" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+      <line x1="315" y1="520" x2="375" y2="520" stroke="url(#rung-gold)" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+      <line x1="325" y1="580" x2="370" y2="580" stroke="url(#rung-gold)" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+      <line x1="320" y1="640" x2="365" y2="640" stroke="url(#rung-gold)" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+
+      <circle cx="315" cy="290" r="5" fill="#00E5A0" />
+      <circle cx="375" cy="290" r="5" fill="#00B4D8" />
+      <circle cx="325" cy="340" r="4" fill="#00E5A0" />
+      <circle cx="370" cy="340" r="4" fill="#00B4D8" />
+      <circle cx="315" cy="400" r="5" fill="#00E5A0" />
+      <circle cx="375" cy="400" r="5" fill="#00B4D8" />
+      <circle cx="325" cy="460" r="4" fill="#00E5A0" />
+      <circle cx="370" cy="460" r="4" fill="#00B4D8" />
+      <circle cx="315" cy="520" r="5" fill="#00E5A0" />
+      <circle cx="375" cy="520" r="5" fill="#00B4D8" />
+      <circle cx="325" cy="580" r="4" fill="#00E5A0" />
+      <circle cx="370" cy="580" r="4" fill="#00B4D8" />
+      <circle cx="320" cy="640" r="5" fill="#00E5A0" />
+      <circle cx="365" cy="640" r="5" fill="#00B4D8" />
+    </g>
+
+    <!-- Right DNA helix -->
+    <g filter="url(#glow)">
+      <path d="M 644 260
+               C 644 310, 714 330, 714 380
+               C 714 430, 644 450, 644 500
+               C 644 550, 714 570, 714 620
+               C 714 670, 684 690, 714 720"
+            fill="none" stroke="url(#helix-blue)" stroke-width="4" stroke-linecap="round" opacity="0.9"/>
+
+      <path d="M 714 260
+               C 714 310, 644 330, 644 380
+               C 644 430, 714 450, 714 500
+               C 714 550, 644 570, 644 620
+               C 644 670, 674 690, 644 720"
+            fill="none" stroke="url(#helix-green)" stroke-width="4" stroke-linecap="round" opacity="0.9"/>
+
+      <line x1="649" y1="290" x2="709" y2="290" stroke="url(#rung-gold)" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+      <line x1="659" y1="340" x2="704" y2="340" stroke="url(#rung-gold)" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+      <line x1="649" y1="400" x2="709" y2="400" stroke="url(#rung-gold)" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+      <line x1="659" y1="460" x2="704" y2="460" stroke="url(#rung-gold)" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+      <line x1="649" y1="520" x2="709" y2="520" stroke="url(#rung-gold)" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+      <line x1="659" y1="580" x2="704" y2="580" stroke="url(#rung-gold)" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+      <line x1="654" y1="640" x2="699" y2="640" stroke="url(#rung-gold)" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+
+      <circle cx="649" cy="290" r="5" fill="#00B4D8" />
+      <circle cx="709" cy="290" r="5" fill="#00E5A0" />
+      <circle cx="659" cy="340" r="4" fill="#00B4D8" />
+      <circle cx="704" cy="340" r="4" fill="#00E5A0" />
+      <circle cx="649" cy="400" r="5" fill="#00B4D8" />
+      <circle cx="709" cy="400" r="5" fill="#00E5A0" />
+      <circle cx="659" cy="460" r="4" fill="#00B4D8" />
+      <circle cx="704" cy="460" r="4" fill="#00E5A0" />
+      <circle cx="649" cy="520" r="5" fill="#00B4D8" />
+      <circle cx="709" cy="520" r="5" fill="#00E5A0" />
+      <circle cx="659" cy="580" r="4" fill="#00B4D8" />
+      <circle cx="704" cy="580" r="4" fill="#00E5A0" />
+      <circle cx="654" cy="640" r="5" fill="#00B4D8" />
+      <circle cx="699" cy="640" r="5" fill="#00E5A0" />
+    </g>
+
+    <!-- Convergence arrows -->
+    <g opacity="0.5">
+      <path d="M 400 460 L 445 460 L 440 452 M 445 460 L 440 468"
+            fill="none" stroke="url(#arrow-grad)" stroke-width="2" stroke-linecap="round"/>
+      <path d="M 624 460 L 579 460 L 584 452 M 579 460 L 584 468"
+            fill="none" stroke="url(#arrow-grad)" stroke-width="2" stroke-linecap="round"/>
+    </g>
+
+    <!-- Central MAG circle -->
+    <g filter="url(#glow)">
+      <circle cx="512" cy="470" r="65" fill="none"
+              stroke="url(#mag-circle)" stroke-width="5" opacity="0.9"/>
+
+      <circle cx="512" cy="470" r="58" fill="#0D1B3E" opacity="0.5" />
+
+      <ellipse cx="495" cy="430" rx="35" ry="20" fill="url(#glass-highlight)"
+               transform="rotate(-25 495 430)" />
+
+      <ellipse cx="525" cy="510" rx="28" ry="14" fill="url(#glass-reflection)"
+               transform="rotate(-15 525 510)" />
+
+      <circle cx="512" cy="470" r="57" fill="none"
+              stroke="url(#glass-rim)" stroke-width="2" opacity="0.7"/>
+
+      <circle cx="512" cy="470" r="58" fill="none"
+              stroke="url(#mag-circle)" stroke-width="1" opacity="0.4"/>
+
+      <path d="M 512 405 A 65 65 0 0 1 565 425" fill="none" stroke="#00E5A0" stroke-width="4" stroke-linecap="round" opacity="0.9"/>
+      <path d="M 568 445 A 65 65 0 0 1 565 495" fill="none" stroke="#00B4D8" stroke-width="4" stroke-linecap="round" opacity="0.9"/>
+      <path d="M 550 523 A 65 65 0 0 1 480 523" fill="none" stroke="#4361EE" stroke-width="4" stroke-linecap="round" opacity="0.9"/>
+      <path d="M 455 495 A 65 65 0 0 1 460 435" fill="none" stroke="#FFD700" stroke-width="4" stroke-linecap="round" opacity="0.9"/>
+      <path d="M 460 415 A 65 65 0 0 1 512 405" fill="none" stroke="#00E5A0" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
+
+      <circle cx="565" cy="425" r="4" fill="#00E5A0" />
+      <circle cx="565" cy="495" r="4" fill="#00B4D8" />
+      <circle cx="480" cy="523" r="4" fill="#4361EE" />
+      <circle cx="460" cy="435" r="4" fill="#FFD700" />
+
+      <ellipse cx="478" cy="438" rx="8" ry="4" fill="white" opacity="0.25"
+               transform="rotate(-35 478 438)" />
+
+      <text x="512" y="460" text-anchor="middle"
+            font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
+            font-size="14" font-weight="700" fill="white" letter-spacing="1.5">
+        REFINED
+      </text>
+      <text x="512" y="478" text-anchor="middle"
+            font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
+            font-size="14" font-weight="700" fill="white" letter-spacing="1.5">
+        MAGS
+      </text>
+    </g>
+
+    <!-- Classification layer dots -->
+    <g opacity="0.7">
+      <circle cx="490" cy="385" r="3" fill="#4361EE" />
+      <circle cx="512" cy="377" r="4" fill="#00B4D8" />
+      <circle cx="534" cy="385" r="3" fill="#00E5A0" />
+
+      <circle cx="600" cy="445" r="3" fill="#FFD700" />
+      <circle cx="610" cy="470" r="4" fill="#F4A261" />
+      <circle cx="600" cy="495" r="3" fill="#FFD700" />
+
+      <circle cx="424" cy="445" r="3" fill="#00E5A0" />
+      <circle cx="414" cy="470" r="4" fill="#00B4D8" />
+      <circle cx="424" cy="495" r="3" fill="#00E5A0" />
+
+      <circle cx="490" cy="555" r="3" fill="#00B4D8" />
+      <circle cx="512" cy="563" r="4" fill="#4361EE" />
+      <circle cx="534" cy="555" r="3" fill="#00B4D8" />
+    </g>
+
+    <!-- Binning tool labels -->
+    <g opacity="0.7">
+      <text x="240" y="640" text-anchor="middle"
+            font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif"
+            font-size="20" font-weight="600" fill="#00E5A0">VAMB</text>
+
+      <text x="512" y="670" text-anchor="middle"
+            font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif"
+            font-size="20" font-weight="600" fill="#00B4D8">SemiBin2</text>
+
+      <text x="784" y="640" text-anchor="middle"
+            font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif"
+            font-size="20" font-weight="600" fill="#FFD700">MetaBat 2</text>
+
+      <path d="M 240 628 Q 280 580 420 530" fill="none" stroke="#00E5A0" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.5"/>
+      <path d="M 512 658 Q 512 600 512 540" fill="none" stroke="#00B4D8" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.5"/>
+      <path d="M 784 628 Q 744 580 604 530" fill="none" stroke="#FFD700" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.5"/>
+    </g>
+
+    <text x="512" y="715" text-anchor="middle"
+          font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif"
+          font-size="11" font-weight="400" fill="#6B7DB0" letter-spacing="2">
+      CONSENSUS BINNING
+    </text>
+
+  </g>
+
+  <rect x="134" y="34" width="756" height="700" rx="120" ry="120"
+        fill="none" stroke="#2A3A6A" stroke-width="1.5" opacity="0.4" />
+
+</svg>

@@ -19,6 +19,7 @@
   - [Runtime profiles](#runtime-profiles)
   - [your_institution.config](#your_institutionconfig)
   - [Cloud computing](#cloud-computing)
+- [Future Roadmap](#future-roadmap)
 - [maggic CLI Help](#maggic-cli-help)
 
 <!-- /TOC -->
@@ -470,6 +471,13 @@ my_aws_batch {
     params.enable_module = false
 }
 ```
+
+\
+&nbsp;
+
+## Future Roadmap
+
+- 06/04/2026: Will address BAM low depth issues in later versions. <1% mapped && <100K reads && <5000 contigs will be filtered out.
 
 \
 &nbsp;
