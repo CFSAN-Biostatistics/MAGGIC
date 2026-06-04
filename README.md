@@ -25,7 +25,7 @@ It is written in **Nextflow** and is part of the modular data analysis pipelines
 
 **CPIPES**:
 
- 1. `maggic` : [READ MORE](./readme/maggic.md).
+ 1. `maggic` : [READ Wiki](https://github.com/CFSAN-Biostatistics/MAGGIC/wiki).
 
 \
 &nbsp;
