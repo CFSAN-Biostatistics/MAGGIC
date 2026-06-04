@@ -2,22 +2,22 @@
 
 MAGGIC (**M**etagenomically **A**ssembled **G**enome **G**eneration with **I**ntegrated **C**lassification) is an automated workflow for the generation and refinement of Metagenome-Assembled Genomes (MAGs) from metagenomic sequencing data.
 
-It integrates multiple binning algorithms (VAMB, SemiBin2, MetaBat 2) followed by consensus-based bin refinement with Binette, taxonomic classification with GTDB-Tk, mobile genetic element detection with geNomad, and antimicrobial resistance gene profiling with AMRFinderPlus.
+It integrates multiple binning algorithms (`VAMB`, `SemiBin2`, `MetaBat 2`) followed by consensus-based bin refinement with `Binette`, taxonomic classification with `GTDB-Tk`, mobile genetic element detection with `geNomad`, and antimicrobial resistance gene profiling with `AMRFinderPlus`.
 
 ![MAGGIC Pipeline Overview](assets/maggic_pipeline_diagram.svg)
 
 ## Contents
 
-- [1. Installation Requirements](Installation-Requirements.md)
-- [2. Database Requirements](Database-Requirements.md)
-- [3. Usage Examples](Usage-Examples.md)
-  - [3.1. Multi-Sample Binning](Multi-Sample-Binning.md)
-  - [3.2. CLI Reference](CLI-Reference.md)
-- [4. Results Overview](Results-Overview.md)
-  - [4.1. Bin Classification](Bin-Classification.md)
-  - [4.2. Plasmid & Virus Metrics](Plasmid-Virus-Metrics.md)
-  - [4.3. AMR Profiling](AMR-Profiling.md)
-  - [4.4. MAGGIC Plots](MAGGIC-Plots.md)
+- [1. Installation Requirements](Installation-Requirements)
+- [2. Database Requirements](Database-Requirements)
+- [3. Usage Examples](Usage-Examples)
+  - [3.1. Multi-Sample Binning](Multi-Sample-Binning)
+  - [3.2. CLI Reference](CLI-Reference)
+- [4. Results Overview](Results-Overview)
+  - [4.1. Bin Classification](Bin-Classification)
+  - [4.2. Plasmid & Virus Metrics](Plasmid-Virus-Metrics)
+  - [4.3. AMR Profiling](AMR-Profiling)
+  - [4.4. MAGGIC Plots](MAGGIC-Plots)
 - [5. Future Roadmap](#future-roadmap)
 
 ## Future Roadmap

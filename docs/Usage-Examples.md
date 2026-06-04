@@ -70,9 +70,9 @@ All outputs are stored in the `--output` path. The MultiQC report is at `maggic-
 | `fastp/` | Quality-filtered FASTQ and JSON reports |
 | `megahit/` | Metagenome assemblies (FASTA contigs) |
 | `minimap2/` | Alignment BAM files |
-| `vamb/` | VAMB binning output |
-| `semibin2/` | SemiBin2 binning output |
-| `metabat2/` | MetaBat 2 binning output |
+| `vamb/` | `VAMB` binning output |
+| `semibin2/` | `SemiBin2` binning output |
+| `metabat2/` | `MetaBat 2` binning output |
 | `binette/` | Consensus refined bins and quality reports |
 | `gtdbtk/` | Taxonomic classification results |
 | `genomad/` | Virus and plasmid detection results |
@@ -80,4 +80,4 @@ All outputs are stored in the `--output` path. The MultiQC report is at `maggic-
 | `coverm_genome/` | Abundance/coverage tables |
 | `maggic_results/` | Aggregated results TSVs |
 | `table_summary/` | Summary tables |
-| `maggic-multiqc/` | MultiQC HTML report |
+| `maggic-multiqc/` | **MultiQC** HTML report |

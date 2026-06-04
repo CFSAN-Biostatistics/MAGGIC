@@ -10,7 +10,7 @@ Length-weighted mean of `plasmid_score` across contigs: `sum(score_i * length_i)
 
 ## Plasmid_Signal_Uniformity
 
-Measures how uniformly the plasmid signal is distributed across contigs. Uses the same scoring as PlasMAAG (<a href="https://pubmed.ncbi.nlm.nih.gov/41639269/" target="_blank">Lindez *et al*. 2026</a>):
+Measures how uniformly the plasmid signal is distributed across contigs. Uses the same scoring as `PlasMAAG` (<a href="https://pubmed.ncbi.nlm.nih.gov/41639269/" target="_blank">Lindez *et al*. 2026</a>):
 
 | Level | Length-Weighted Score | Minimum Score |
 |-------|----------------------|---------------|
@@ -51,4 +51,4 @@ Pipe-separated evidence summary. Components appended only if present; `none` if 
 plasmid:High|virus:Low|proviruses:2|mob:Relaxed,Mobilized
 ```
 
-The `mob` types come from geNomad plasmid_summary.tsv.
+The `mob` types come from `geNomad` `plasmid_summary.tsv`.

@@ -19,16 +19,16 @@ CheckM2 uses ~20,000 KEGG orthologs for chromosomal housekeeping functions (<a h
 
 | MAGGIC Classification | Criteria |
 |-----------------------|----------|
-| `Mixed_MAG` | geNomad plasmid_summary.tsv has contigs with plasmid_score >= 0.75 AND count / total_contigs >= 0.2 (using Binette contig_count as denominator) |
+| `Mixed_MAG` | `geNomad` `plasmid_summary.tsv` has contigs with plasmid_score >= 0.75 AND count / total_contigs >= 0.2 (using Binette contig_count as denominator) |
 | `Chromosome_MAG` | No contigs with plasmid_score >= 0.75, OR plasmid_fraction < 0.2. Also assigned when virus_summary.tsv exists but only proviruses are present |
 
 ### When Completeness < 50%
 
 | MAGGIC Classification | Criteria |
 |-----------------------|----------|
-| `Virus_MAG` | geNomad virus_summary.tsv has any entries (checked first — virus model is most reliable) |
-| `Plasmid_MAG` | geNomad plasmid_summary.tsv has entries but virus_summary.tsv has none |
-| `Chromosome_MAG` | Neither geNomad plasmid nor virus summaries have entries |
+| `Virus_MAG` | `geNomad` `virus_summary.tsv` has any entries (checked first — virus model is most reliable) |
+| `Plasmid_MAG` | `geNomad` `plasmid_summary.tsv` has entries but virus_summary.tsv has none |
+| `Chromosome_MAG` | Neither `geNomad` plasmid nor virus summaries have entries |
 
 ## Bacterial_Confidence Thresholds
 
