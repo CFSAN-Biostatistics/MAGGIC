@@ -6,21 +6,19 @@ It integrates multiple binning algorithms (VAMB, SemiBin2, MetaBat 2) followed b
 
 ![MAGGIC Pipeline Overview](assets/maggic_pipeline_diagram.svg)
 
-## Quick Links
+## Contents
 
-| Topic | Page |
-|-------|------|
-| System setup | [[Installation-Requirements]] |
-| Reference databases | [[Database-Requirements]] |
-| Strata-limited binning | [[Multi-Sample-Binning]] |
-| Results and output files | [[Results-Overview]] |
-| Bin type classification | [[Bin-Classification]] |
-| Plasmid & virus metrics | [[Plasmid-Virus-Metrics]] |
-| AMR profiling | [[AMR-Profiling]] |
-| Diagnostic plots | [[MAGGIC-Plots]] |
-| Run the pipeline | [[Usage-Examples]] |
-| Per-tool CLI options | [[CLI-Reference]] |
-| Future roadmap | [#future-roadmap](#future-roadmap) |
+- [[1. Installation-Requirements]]
+- [[2. Database-Requirements]]
+- [[3. Usage-Examples]]
+  - [[3.1. Multi-Sample-Binning]]
+  - [[3.2. CLI-Reference]]
+- [[4. Results-Overview]]
+  - [[4.1. Bin-Classification]]
+  - [[4.2. Plasmid-Virus-Metrics]]
+  - [[4.3. AMR-Profiling]]
+  - [[4.4. MAGGIC-Plots]]
+- [[5. Future Roadmap]](#future-roadmap)
 
 ## Future Roadmap
 
