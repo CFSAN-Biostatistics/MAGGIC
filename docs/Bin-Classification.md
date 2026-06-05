@@ -3,7 +3,7 @@ Bins are classified using a multi-signal approach based on `geNomad` scores, wit
 ## `geNomad` Classification Accuracy
 
 - **Plasmid**: Precision 70.8%, Sensitivity 89.8% (<a href="https://doi.org/10.1038/s41587-023-01953-y" target="_blank">Camargo *et al*. 2024</a>). Nearly one third of contigs called plasmid are potentially false positives.
-- **Virus**: MCC 95.3%, F1 97.3% — strong classification.
+- **Virus**: MCC 95.3%, F1 97.3%; strong classification.
 
 `geNomad` runs in default mode so ALL contigs receive plasmid/virus scores where possible. Official filtering presets: default (min-score=0.70), conservative (min-score=0.80), relaxed (min-score=0.00).
 
@@ -24,7 +24,7 @@ Bins are classified using a multi-signal approach based on `geNomad` scores, wit
 
 | MAGGIC Classification | Criteria |
 |-----------------------|----------|
-| `Virus_MAG` | `geNomad` `virus_summary.tsv` has any entries (checked first — virus model is most reliable) |
+| `Virus_MAG` | `geNomad` `virus_summary.tsv` has any entries (checked first; virus model is most reliable) |
 | `Plasmid_MAG` | `geNomad` `plasmid_summary.tsv` has entries but virus_summary.tsv has none |
 | `Chromosome_MAG` | Neither `geNomad` plasmid nor virus summaries have entries |
 
