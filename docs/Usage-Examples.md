@@ -1,12 +1,10 @@
-# Usage & Examples
-
 Clone or download the repository and call `cpipes`:
 
 ```bash
 ./cpipes --pipeline maggic [options]
 ```
 
-Or pull and run directly with Nextflow:
+Or pull and run directly with `Nextflow`:
 
 ```bash
 nextflow pull CFSAN-Biostatistics/maggic

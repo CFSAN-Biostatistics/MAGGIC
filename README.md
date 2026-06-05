@@ -25,7 +25,7 @@ It is written in **Nextflow** and is part of the modular data analysis pipelines
 
 **CPIPES**:
 
- 1. `maggic` : [READ Wiki](https://github.com/CFSAN-Biostatistics/MAGGIC/wiki).
+ 1. `maggic` : [READ WIKI](https://github.com/CFSAN-Biostatistics/MAGGIC/wiki).
 
 \
 &nbsp;
@@ -48,6 +48,103 @@ This is still a work in progress.
 ## Pipeline Overview
 
 ![MAGGIC Pipeline Overview](./assets/maggic_pipeline_diagram.svg)
+
+\
+&nbsp;
+
+## Example Plots in **MultiQC** Output
+
+<p align="center">
+  <table>
+    <tr>
+      <td align="center" width="50%">
+        <b>Data Summary</b><br/>
+        <img src="./docs/assets/maggic_datasum_cards.png" width="700"/>
+      </td>
+      <td align="center" width="50%">
+        <b>Quality Scatter</b><br/>
+        <img src="./docs/assets/quality_scatter.png" width="700"/>
+      </td>
+    </tr>
+    <tr>
+      <td align="center" width="50%">
+        <b>AMR Class Distribution</b><br/>
+        <img src="./docs/assets/amr_class_donut.png" width="700"/>
+      </td>
+      <td align="center" width="50%">
+        <b>Species Diversity</b><br/>
+        <img src="./docs/assets/species_diversity.png" width="700"/>
+      </td>
+    </tr>
+  </table>
+</p>
+
+\
+&nbsp;
+
+### Quality Assessment
+
+<details>
+<summary><b>Click to expand</b>: Completeness vs contamination scatter, ECDF, and contig count diagnostics.</summary>
+
+<p align="center">
+  <img src="./docs/assets/quality_scatter.png" width="700"/>
+</p>
+
+<p align="center">
+  <img src="./docs/assets/quality_ecdf.png" width="700"/>
+</p>
+
+<p align="center">
+  <img src="./docs/assets/completeness_contig_scatter.png" width="700"/>
+</p>
+</details>
+
+### Taxonomic Diversity
+
+<details>
+<summary><b>Click to expand</b>: Genus/species composition, diversity bars, and abundance heatmaps.</summary>
+
+<p align="center">
+  <img src="./docs/assets/genus_diversity.png" width="700"/>
+</p>
+
+<p align="center">
+  <img src="./docs/assets/species_diversity.png" width="700"/>
+</p>
+
+<p align="center">
+  <img src="./docs/assets/genus_heatmap.png" width="800"/>
+</p>
+
+<p align="center">
+  <img src="./docs/assets/species_heatmap.png" width="800"/>
+</p>
+</details>
+
+### AMR Profiling
+
+<details>
+<summary><b>Click to expand</b>: AMR gene wordcloud and resistance class distribution.</summary>
+
+<p align="center">
+  <img src="./docs/assets/amr_wordcloud.png" width="700"/>
+</p>
+
+<p align="center">
+  <img src="./docs/assets/amr_class_donut.png" width="700"/>
+</p>
+</details>
+
+### Mobile Genetic Elements
+
+<details>
+<summary><b>Click to expand</b>: Plasmid, virus, provirus, and conjugation signals across bins.</summary>
+
+<p align="center">
+  <img src="./docs/assets/mge_radar.png" width="700"/>
+</p>
+</details>
 
 \
 &nbsp;

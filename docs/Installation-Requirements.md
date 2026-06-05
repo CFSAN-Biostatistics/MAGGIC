@@ -1,5 +1,3 @@
-# Installation & Requirements
-
 ## Minimum Requirements
 
 1. **Nextflow version 25.10.5**

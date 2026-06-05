@@ -1,5 +1,3 @@
-# CLI Reference
-
 Show per-tool CLI options with `--help <tool>`:
 
 ```bash

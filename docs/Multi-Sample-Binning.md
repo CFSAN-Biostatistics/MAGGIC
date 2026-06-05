@@ -1,14 +1,14 @@
-# Multi-Sample Binning with Strata Control
+## Multi-Sample Binning with Strata Control
 
-MAGGIC implements **strata-limited multi-sample binning**, a computationally efficient approach that improves MAG recovery while keeping alignment counts tractable for large cohorts.
+`MAGGIC` implements **strata-limited multi-sample binning**, a computationally efficient approach that improves MAG recovery while keeping alignment counts tractable for large cohorts.
 
-Multi-sample binning aligns reads from multiple samples against every assembled contig set, giving binning tools (VAMB, SemiBin2, MetaBat 2) cross-sample coverage profiles. As shown by <a href="https://doi.org/10.1038/s41467-025-57957-6" target="_blank">Han *et al*. 2025</a>, this recovers **41-43% more species and strains** compared to single-sample binning, including rare taxa and antibiotic resistance gene hosts.
+Multi-sample binning aligns reads from multiple samples against every assembled contig set, giving binning tools (`VAMB`, `SemiBin2`, `MetaBat 2`) cross-sample coverage profiles. As shown by <a href="https://doi.org/10.1038/s41467-025-57957-6" target="_blank">Han *et al*. 2025</a>, this recovers **41-43% more species and strains** compared to single-sample binning, including rare taxa and antibiotic resistance gene hosts.
 
 However, traditional all-vs-all alignment produces N&sup2; BAM files (50 samples = 2,500 alignments; 100 samples = 10,000 alignments). Coverage diversity **saturates around 20-30 samples** for most metagenomic experiments; beyond that, marginal improvement occurs at exponentially increasing computational cost (<a href="https://doi.org/10.1038/s41467-025-57957-6" target="_blank">Han *et al*. 2025</a>; <a href="https://doi.org/10.1038/s41587-020-00777-4" target="_blank">Nissen *et al*. 2021</a>; <a href="https://doi.org/10.3389/fmicb.2022.869135" target="_blank">Haryono *et al*. 2022</a>).
 
 ## How It Works
 
-MAGGIC selects a subset of `strata_size` samples (default 15) and aligns their reads to every assembly, producing `strata_size` &times; `N` BAM files instead of N&sup2;. Selection uses **staggered sampling**, which distributes selected samples uniformly across the full sorted sample list.
+`MAGGIC` selects a subset of `strata_size` samples (default 15) and aligns their reads to every assembly, producing `strata_size` &times; `N` BAM files instead of N&sup2;. Selection uses **staggered sampling**, which distributes selected samples uniformly across the full sorted sample list.
 
 This avoids geographic selection bias. In runs where sample IDs encode spatial information (state prefixes, site codes, collection dates), taking the first N samples concentrates coverage from a single region. Geographic distance is the primary driver of beta diversity in environmental samples (<a href="https://doi.org/10.1038/s41467-024-55425-1" target="_blank">Cheng *et al*. 2024</a>; <a href="https://doi.org/10.1128/mbio.02844-24" target="_blank">Peng *et al*. 2025</a>).
 
@@ -19,7 +19,7 @@ For example, with 500 samples and `strata_size` = 15:
 | First-N (sequential) | 0, 1, 2, 3, ... 14 | 1-2 states if IDs are alphabetically ordered |
 | Staggered intervals | 0, 33, 66, 99, ... 483 | ~15 states evenly distributed |
 
-The binning algorithms (VAMB's variational autoencoder, MetaBAT 2's coverage clustering, SemiBin2's graph neural network) learn from these co-abundance patterns (<a href="https://doi.org/10.1038/s41587-020-00777-4" target="_blank">Nissen *et al*. 2021</a>; <a href="https://doi.org/10.1038/s41467-025-57957-6" target="_blank">Han *et al*. 2025</a>).
+The binning algorithms (`VAMB`' variational autoencoder, `MetaBAT 2`' coverage clustering, `SemiBin2`'s graph neural network) learn from these co-abundance patterns (<a href="https://doi.org/10.1038/s41587-020-00777-4" target="_blank">Nissen *et al*. 2021</a>; <a href="https://doi.org/10.1038/s41467-025-57957-6" target="_blank">Han *et al*. 2025</a>).
 
 ### Parameters
 

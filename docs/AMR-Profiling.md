@@ -1,6 +1,4 @@
-# AMR Profiling
-
-MAGGIC profiles antimicrobial resistance genes using **AMRFinderPlus**, running on refined MAGs after binning and quality assessment.
+`MAGGIC` profiles antimicrobial resistance genes using **AMRFinderPlus**, running on refined MAGs after binning and quality assessment.
 
 ## Output Columns
 
@@ -12,7 +10,7 @@ MAGGIC profiles antimicrobial resistance genes using **AMRFinderPlus**, running 
 
 ## Database
 
-AMRFinderPlus requires a local reference database. Set the path via `--amrfinderplus_db` or in `workflows/conf/maggic.config`:
+`AMRFinderPlus` requires a local reference database. Set the path via `--amrfinderplus_db` or in `workflows/conf/maggic.config`:
 
 ```
 amrfinderplus_db = /path/to/maggic_dbs/amrfinderplus/latest
@@ -22,4 +20,4 @@ See [[Database-Requirements]] for download instructions.
 
 ## MultiQC Integration
 
-The AMR summary appears in the MultiQC Data Summary cards and the Chromosome/Plasmid result tables. Total AMR gene counts and unique classes are aggregated across all bins.
+The AMR summary appears in the `MultiQC` Data Summary cards and the Chromosome/Plasmid result tables. Total AMR gene counts and unique classes are aggregated across all bins.

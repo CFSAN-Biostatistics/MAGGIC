@@ -1,8 +1,6 @@
-# Plasmid & Virus Metrics
-
 ## Plasmid_Fraction
 
-Fraction of total contigs with `plasmid_score >= 0.75`. Uses Binette contig_count as denominator, not plasmid_summary.tsv row count.
+Fraction of total contigs with `plasmid_score >= 0.75`. Uses `Binette` contig_count as denominator, not plasmid_summary.tsv row count.
 
 ## Plasmid_Length_Weighted_Score
 
