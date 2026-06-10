@@ -28,7 +28,7 @@ Most pipeline processes use the `process_low_turbo` resource label (20 CPUs, 128
     --input /path/to/metagenomic_fastq/dir \
     --output /path/to/output \
     --max_cpus 5 \
-    -profile singularity \
+    -profile ahptainer \
     -resume
 ```
 
@@ -54,8 +54,8 @@ Append to `conf/computeinfra.config`:
 your_institution {
     process.executor = 'sge'
     process.queue = 'normal.q'
-    singularity.enabled = false
-    singularity.autoMounts = true
+    apptainer.enabled = false
+    apptainer.autoMounts = true
     docker.enabled = false
     params.enable_conda = true
     conda.enabled = true
@@ -76,8 +76,8 @@ my_aws_batch {
     queue = 'my-batch-queue'
     aws.batch.cliPath = '/home/ec2-user/miniconda/bin/aws'
     aws.batch.region = 'us-east-1'
-    singularity.enabled = false
-    singularity.autoMounts = true
+    apptainer.enabled = false
+    apptainer.autoMounts = true
     docker.enabled = true
     params.conda_enabled = false
     params.enable_module = false

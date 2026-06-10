@@ -45,13 +45,13 @@ This is still a work in progress.
 \
 &nbsp;
 
-## Pipeline Overview
+<!--## Pipeline Overview
 
 ![MAGGIC Pipeline Overview](./assets/maggic_pipeline_diagram.svg)
 
 \
 &nbsp;
-
+-->
 ## Example Plots in **MultiQC** Output
 
 <p align="center">

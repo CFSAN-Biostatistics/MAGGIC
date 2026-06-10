@@ -23,7 +23,7 @@ cd nf-maggic
     --pipeline maggic \
     --input /path/to/illumina/fastq/dir \
     --output /path/to/output \
-    -profile singularity \
+    -profile ahptainer \
     -resume
 ```
 
@@ -36,7 +36,7 @@ cd nf-maggic
     --output /path/to/output \
     --fq_single_end true \
     --fq_filename_delim_idx 4 \
-    -profile singularity \
+    -profile ahptainer \
     -resume
 ```
 

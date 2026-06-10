@@ -46,5 +46,5 @@ The default strata size of 15 balances cross-sample coverage diversity with comp
     --input /path/to/fastq/dir \
     --output /path/to/output \
     --strata_size 20 \
-    -profile singularity \
+    -profile ahptainer \
     -resume

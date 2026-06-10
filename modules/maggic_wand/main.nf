@@ -2,11 +2,11 @@ process MAGGIC_WAND {
     tag 'maggic-wand plots'
     label 'process_micro'
 
-    module (params.enable_module ? "${params.swmodulepath}${params.fs}maggic-wand${params.fs}0.1.2" : null)
-    conda (params.enable_conda ? "conda-forge::python=3.11 conda-forge::uv conda-forge::pip" : null)
+    module (params.enable_module ? "${params.swmodulepath}${params.fs}maggic-wand${params.fs}0.1.3" : null)
+    conda (params.enable_conda ? "conda-forge::python=3.12 conda-forge::uv conda-forge::pip" : null)
     container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
-        'oras://ghcr.io/biocoder/maggic-wand-sif:0.1.2' :
-        'ghcr.io/biocoder/maggic-wand:0.1.2' }"
+        'oras://ghcr.io/biocoder/maggic-wand-sif:0.1.3' :
+        'ghcr.io/biocoder/maggic-wand:0.1.3' }"
 
     input:
         tuple val(meta), path(results, stageAs: "maggic-results/*")
@@ -49,7 +49,7 @@ process MAGGIC_WAND {
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":
-            maggic-wand: \$(${envPrefix}maggic-wand version 2>&1 | sed 's/\\x1b\\[[0-9;]*m//g; s/\\x1b\\]8;[^a]*a//g' | sed -n 's/.*v\\([0-9]\\+\\.\\([0-9]\\+\\.\\)\\+[0-9]\\+\\).*/\\1/p')
+            maggic-wand: \$(${envPrefix}maggic-wand --help 2>&1 | sed 's/\\x1b\\[[0-9;]*m//g' | grep -i 'version' | grep -oE '[0-9]+\\.[0-9]+\\.[0-9]+')
             python: \$( python --version | sed 's/Python //g' )
         END_VERSIONS
         """
