@@ -2,11 +2,11 @@ process MAGGIC_WAND {
     tag 'maggic-wand plots'
     label 'process_micro'
 
-    module (params.enable_module ? "${params.swmodulepath}${params.fs}maggic-wand${params.fs}0.1.3" : null)
+    module (params.enable_module ? "${params.swmodulepath}${params.fs}maggic-wand${params.fs}0.1.6" : null)
     conda (params.enable_conda ? "conda-forge::python=3.12 conda-forge::uv conda-forge::pip" : null)
     container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
-        'oras://ghcr.io/biocoder/maggic-wand-sif:0.1.3' :
-        'ghcr.io/biocoder/maggic-wand:0.1.3' }"
+        'oras://ghcr.io/biocoder/maggic-wand-sif:0.1.6' :
+        'ghcr.io/biocoder/maggic-wand:0.1.6' }"
 
     input:
         tuple val(meta), path(results, stageAs: "maggic-results/*")

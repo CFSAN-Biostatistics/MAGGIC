@@ -3,7 +3,6 @@
 # Kranti Konganti
 #
 # 05/30/2026
-# (C) HFP, FDA
 #
 
 import argparse

@@ -1,7 +1,7 @@
 # `maggic`
 
 <p align="center">
-  <img src="assets/maggic-icon.svg" alt="MAGGIC Logo" width="700" height="700"/>
+  <img src="./assets/maggic-icon.png" alt="MAGGIC" width="450" height="450" style="border-radius:60px;box-shadow:0 2px 3px rgba(0,0,0,0.1),0 8px 12px rgba(0,0,0,0.08),0 16px 24px rgba(0,0,0,0.04),0 0 1px rgba(0,0,0,0.08);display:block;margin:0 auto;">
 </p>
 
 `maggic` (**M**etagenomically **A**ssembled **G**enome **G**eneration with **I**ntegrated **C**lassification) is an automated workflow for the generation and refinement of Metagenome-Assembled Genomes (**MAGs**) from metagenomic sequencing data. It integrates multiple binning algorithms (**VAMB**, **SemiBin2**, **MetaBat 2**) followed by consensus-based bin refinement with **Binette**, taxonomic classification with **GTDB-Tk**, mobile genetic element detection with **geNomad**, and antimicrobial resistance gene profiling with **AMRFinderPlus**.
@@ -15,7 +15,7 @@ It is written in **Nextflow** and is part of the modular data analysis pipelines
 
 ## Software Information
 
-* The current release version is **`v0.6.1`**.
+* The current release version is **`v0.6.2`**.
 * [See the full changelog](https://github.com/CFSAN-Biostatistics/maggic/releases).
 
 \
@@ -53,6 +53,8 @@ This is still a work in progress.
 &nbsp;
 -->
 ## Example Plots in **MultiQC** Output
+
+Add `--maggic_wand_run true` to the command-line call to generate plots, which will be included in the generated **MultiQC** report file.
 
 <p align="center">
   <table>

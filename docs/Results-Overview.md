@@ -1,4 +1,4 @@
-The primary outputs are produced by [`bin/maggic_results.py`](../bin/maggic_results.py), which aggregates quality metrics, taxonomic classification, mobile genetic element detection, and AMR profiling from all binning tools into structured results.
+The primary outputs are produced by [`bin/maggic_results.py`](https://github.com/CFSAN-Biostatistics/MAGGIC/blob/main/bin/maggic_results.py), which aggregates quality metrics, taxonomic classification, mobile genetic element detection, and AMR profiling from all binning tools into structured results.
 
 ## `MultiQC` HTML Report
 

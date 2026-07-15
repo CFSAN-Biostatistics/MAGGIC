@@ -3,7 +3,6 @@
 # Kranti Konganti
 #
 # 05/15/2026
-# (C) HFP, FDA
 #
 
 import argparse
@@ -1171,9 +1170,12 @@ def compute_datasum(results: List[Dict[str, Any]]) -> Dict[str, Any]:
             parts = taxonomy.split(";")
             # GTDB-Tk: d__;p__;c__;o__;f__;g__;s__ (indices 0-6)
             taxon = "Unclassified"
+            # Empty rank prefixes (e.g., "s__") mean unclassified at that rank
+            _EMPTY_RANK_PREFIXES = frozenset({"d__", "p__", "c__", "o__", "f__", "g__", "s__"})
             for idx in range(6, 0, -1):
-                if len(parts) > idx and parts[idx].strip():
-                    taxon = parts[idx]
+                taxon_str = parts[idx].strip() if len(parts) > idx else ""
+                if taxon_str and taxon_str not in _EMPTY_RANK_PREFIXES:
+                    taxon = taxon_str
                     break
             datasum["top_taxa"][taxon] = datasum["top_taxa"].get(taxon, 0) + 1
 

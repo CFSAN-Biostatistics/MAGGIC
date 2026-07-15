@@ -414,17 +414,30 @@ workflow MAGGIC {
                 )
         )
 
-        MAGGIC_WAND(
-            MAGGIC_RESULTS.out.results
-                .mix(
-                    MAGGIC_RESULTS.out.chromosome_results,
-                    MAGGIC_RESULTS.out.virus_results,
-                    MAGGIC_RESULTS.out.plasmid_results,
-                    MAGGIC_RESULTS.out.abundance,
-                    MAGGIC_RESULTS.out.binette_results
-                )
-                .groupTuple()
+        if (params.maggic_wand_run) {
+            MAGGIC_WAND(
+                MAGGIC_RESULTS.out.results
+                    .mix(
+                        MAGGIC_RESULTS.out.chromosome_results,
+                        MAGGIC_RESULTS.out.virus_results,
+                        MAGGIC_RESULTS.out.plasmid_results,
+                        MAGGIC_RESULTS.out.abundance,
+                        MAGGIC_RESULTS.out.binette_results
+                    )
+                    .groupTuple()
             )
+
+            software_versions
+                .mix ( MAGGIC_WAND.out.versions.ifEmpty(null) )
+                .set { software_versions }
+
+            ch_multiqc
+                .mix(
+                    MAGGIC_RESULTS.out.mqc_yml,
+                    MAGGIC_WAND.out.plots_mqc
+                )
+                .set { ch_multiqc }
+        }
 
         TABLE_SUMMARY(
             ch_skipped_samples
@@ -468,7 +481,6 @@ workflow MAGGIC {
                     COVERM_GENOME.out.versions.ifEmpty(null),
                     GTDBTK_CLASSIFY_WF.out.versions.ifEmpty(null),
                     MAGGIC_RESULTS.out.versions.ifEmpty(null),
-                    MAGGIC_WAND.out.versions.ifEmpty(null),
                     TABLE_SUMMARY.out.versions.ifEmpty(null)
                 )
                 .unique()
@@ -479,9 +491,7 @@ workflow MAGGIC {
             ch_multiqc
                 .mix(
                     TABLE_SUMMARY.out.mqc_yml,
-                    MAGGIC_RESULTS.out.mqc_yml,
-                    DUMP_SOFTWARE_VERSIONS.out.mqc_yml,
-                    MAGGIC_WAND.out.plots_mqc
+                    DUMP_SOFTWARE_VERSIONS.out.mqc_yml
                 )
                 .collect( sort: true )
         )
