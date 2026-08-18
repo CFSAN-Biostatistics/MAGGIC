@@ -10,7 +10,7 @@
 
 ## Database
 
-`AMRFinderPlus` requires a local reference database. Set the path via `--amrfinderplus_db` or in `workflows/conf/maggic.config`:
+`AMRFinderPlus` requires a local reference database. Set the path via `--amrfinderplus_db` or in `workflows/conf/maggic.config` (or `maggic_lr.config`):
 
 ```
 amrfinderplus_db = /path/to/maggic_dbs/amrfinderplus/latest

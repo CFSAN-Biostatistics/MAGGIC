@@ -7,7 +7,7 @@ The following databases are required before running the pipeline. All paths must
 
 Download all from [research.foodsafetyrisk.org](https://research.foodsafetyrisk.org/maggic/dbs/maggic_dbs.tar.bz2).
 
-Once downloaded, uncompress and set UNIX paths in `workflows/conf/maggic.config`:
+Once downloaded, uncompress and set UNIX paths in `workflows/conf/maggic.config` and `workflows/conf/maggic_lr.config`:
 
 - `binette_checkm2_db = /path/to/maggic_dbs/checkm2/latest`
 - `gtdbtk_classify_wf_data_path = /path/to/gtdbtk/release232`

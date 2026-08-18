@@ -6,7 +6,7 @@
 
 `maggic` (**M**etagenomically **A**ssembled **G**enome **G**eneration with **I**ntegrated **C**lassification) is an automated workflow for the generation and refinement of Metagenome-Assembled Genomes (**MAGs**) from metagenomic sequencing data. It integrates multiple binning algorithms (**VAMB**, **SemiBin2**, **MetaBat 2**) followed by consensus-based bin refinement with **Binette**, taxonomic classification with **GTDB-Tk**, mobile genetic element detection with **geNomad**, and antimicrobial resistance gene profiling with **AMRFinderPlus**.
 
-`maggic` works with **Illumina short-read** metagenomic sequencing data and produces quality-checked **MAGs** alongside comprehensive **MultiQC** reports.
+`maggic` works with **short-read** and **long-read** metagenomic sequencing data and produces quality-checked **MAGs** alongside comprehensive **MultiQC** reports.
 
 It is written in **Nextflow** and is part of the modular data analysis pipelines (**CFSAN PIPELINES** or **CPIPES** for short) at **HFP**.
 
@@ -15,7 +15,7 @@ It is written in **Nextflow** and is part of the modular data analysis pipelines
 
 ## Software Information
 
-* The current release version is **`v0.6.2`**.
+* The current release version is **`v0.7.0`**.
 * [See the full changelog](https://github.com/CFSAN-Biostatistics/maggic/releases).
 
 \

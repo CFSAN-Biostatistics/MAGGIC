@@ -2,10 +2,10 @@
 
 /*
 ----------------------------------------------------------------------------------------
-    cfsan-dev/cpipes
+    hfp-dev/cpipes
 ----------------------------------------------------------------------------------------
     NAME          : CPIPES
-    DESCRIPTION   : Modular Nextflow pipelines at CFSAN, FDA.
+    DESCRIPTION   : Modular Nextflow pipelines at HFP, FDA.
     GITLAB        : https://xxxxxxxxxx/Kranti.Konganti/cpipes-framework
     JIRA          : https://xxxxxxxxxx/jira/projects/CPIPES/
     CONTRIBUTORS  : Kranti Konganti
@@ -31,6 +31,9 @@ switch ("${params.pipeline}") {
     case "maggic":
         include { MAGGIC } from "${params.workflows}${params.fs}${params.pipeline}"
         break
+    case "maggic_lr":
+        include { MAGGIC_LR } from "${params.workflows}${params.fs}${params.pipeline}"
+        break
     default:
         stopNow("PLEASE MENTION A PIPELINE NAME. Ex: --pipeline maggic")
 }
@@ -47,6 +50,9 @@ workflow {
     switch ("${params.pipeline}") {
         case "maggic":
             MAGGIC()
+            break
+        case "maggic_lr":
+            MAGGIC_LR()
             break
     }
 }

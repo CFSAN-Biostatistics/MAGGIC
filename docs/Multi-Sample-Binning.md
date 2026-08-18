@@ -15,7 +15,7 @@ This avoids geographic selection bias. In runs where sample IDs encode spatial i
 For example, with 500 samples and `strata_size` = 15:
 
 | Method | Selected indices | Geographic spread |
-|--------|-----------------|-------------------|
+| -------- | ----------------- | ------------------- |
 | First-N (sequential) | 0, 1, 2, 3, ... 14 | 1-2 states if IDs are alphabetically ordered |
 | Staggered intervals | 0, 33, 66, 99, ... 483 | ~15 states evenly distributed |
 
@@ -31,7 +31,7 @@ The binning algorithms (`VAMB`' variational autoencoder, `MetaBAT 2`' coverage c
 ## Computational Time Reduction
 
 | Samples | Full All-vs-All | Strata (15) | Reduction |
-|---------|----------------|-------------|-----------|
+| --------- | ---------------- | ------------- | ----------- |
 | 30 | 900 BAMs | 450 BAMs | 2x |
 | 50 | 2,500 BAMs | 750 BAMs | 3.3x |
 | 100 | 10,000 BAMs | 1,500 BAMs | 6.7x |
@@ -48,3 +48,4 @@ The default strata size of 15 balances cross-sample coverage diversity with comp
     --strata_size 20 \
     -profile ahptainer \
     -resume
+```

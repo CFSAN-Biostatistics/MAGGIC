@@ -4,6 +4,8 @@ MAGGIC (**M**etagenomically **A**ssembled **G**enome **G**eneration with **I**nt
 
 It integrates multiple binning algorithms (`VAMB`, `SemiBin2`, `MetaBat 2`) followed by consensus-based bin refinement with `Binette`, taxonomic classification with `GTDB-Tk`, mobile genetic element detection with `geNomad`, and antimicrobial resistance gene profiling with `AMRFinderPlus`.
 
+MAGGIC supports both **short-read** (`--pipeline maggic`) and **long-read** (`--pipeline maggic_lr`) metagenomic sequencing data.
+
 ![MAGGIC Pipeline Overview](assets/maggic_pipeline_diagram.svg)
 
 ## Contents

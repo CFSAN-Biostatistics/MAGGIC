@@ -6,8 +6,8 @@ import nextflow.file.FileHelper
 include { \
     summaryOfParams; stopNow; fastqEntryPointHelp; sendMail; conciseHelp; \
     addPadding; wrapUpHelp           } from "${params.routines}"
-include { fastpHelp                  } from "${params.toolshelp}${params.fs}fastp"
-include { megahitHelp                } from "${params.toolshelp}${params.fs}megahit"
+include { filtlongHelp               } from "${params.toolshelp}${params.fs}filtlong"
+include { flyeHelp                   } from "${params.toolshelp}${params.fs}flye"
 include { minimap2Help               } from "${params.toolshelp}${params.fs}minimap2"
 include { semibin2sebHelp            } from "${params.toolshelp}${params.fs}semibin2seb"
 include { vambbindefHelp             } from "${params.toolshelp}${params.fs}vambbindef"
@@ -26,8 +26,9 @@ if (params.help) {
 
 // Include any necessary modules and subworkflows
 include { PROCESS_FASTQ              } from "${params.subworkflows}${params.fs}process_fastq"
-include { FASTP                      } from "${params.modules}${params.fs}fastp${params.fs}main"
-include { MEGAHIT_ASSEMBLE           } from "${params.modules}${params.fs}megahit${params.fs}assemble${params.fs}main"
+include { FASTQC                     } from "${params.modules}${params.fs}fastqc${params.fs}main"
+include { FILTLONG                   } from "${params.modules}${params.fs}filtlong${params.fs}main"
+include { FLYE_ASSEMBLE              } from "${params.modules}${params.fs}flye${params.fs}assemble${params.fs}main"
 include { MINIMAP2_ALIGN             } from "${params.modules}${params.fs}custom${params.fs}minimap2${params.fs}align${params.fs}main"
 // include { MINIMAP2_ALIGN as \
 //     REFINED_BIN_ALIGN                } from "${params.modules}${params.fs}custom${params.fs}minimap2${params.fs}align${params.fs}main"
@@ -99,11 +100,11 @@ if (!params.gtdbtk_classify_wf_data_path) {
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    RUN THE MAGGIC WORKFLOW
+    RUN THE MAGGIC_LR WORKFLOW
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-workflow MAGGIC {
+workflow MAGGIC_LR {
     main:
         log.info summaryOfParams()
 
@@ -113,25 +114,63 @@ workflow MAGGIC {
             .set { software_versions }
 
         PROCESS_FASTQ.out.processed_reads
-            .set { ch_processed_reads }
-
-        FASTP( ch_processed_reads )
-
-        FASTP.out.passed_reads
             .toSortedList { a, b -> a[0].id <=> b[0].id }
-            .flatMap{ all_reads -> all_reads }
+            .flatMap { all_reads -> all_reads }
+            .tap { ch_pfpass_processed_reads }
+            .map { meta, fastq ->
+                meta.single_end = params.fq_single_end
+                [ meta, [], fastq ]
+            }
+            .set { ch_processed_reads_lr }
+
+        FILTLONG ( ch_processed_reads_lr )
+
+        FILTLONG.out.filtered_reads
+            .map { meta, fastq ->
+                def meta2 = [:]
+                meta2.id = meta.id.toString() + '.filtered'
+                meta2.single_end = meta.single_end
+                meta2.strandedness = meta.strandedness
+                [ meta2, fastq ]
+            }
+            .tap { ch_processed_reads_fqc }
+            .map { meta, fastq ->
+                def meta3 = [:]
+                meta3.id = meta.id.toString().replaceFirst('\\.filtered$', '')
+                meta3.single_end = meta.single_end
+                meta3.strandedness = meta.strandedness
+                [ meta3, fastq ]
+            }
             .set { ch_processed_reads }
 
-        FASTP.out.json
-            .map { meta, json -> [ json ] }
-            .collect( sort: true )
+        FILTLONG.out.log
+            .map { meta, log -> [ log ] }
+            .collect()
             .set { ch_multiqc }
 
-        MEGAHIT_ASSEMBLE( ch_processed_reads )
+        FASTQC (
+            ch_pfpass_processed_reads
+                .map { meta, fastq ->
+                    def meta2 = [:]
+                    meta2.id = meta.id.toString() + '.raw'
+                    meta2.single_end = meta.single_end
+                    meta2.strandedness = meta.strandedness
+                    [ meta2, fastq ]
+                }
+                .concat ( ch_processed_reads_fqc )
+        )
 
-        // Filter out reads for which megahit assembly failed
+        FASTQC.out.zip
+            .map { meta, zip -> [ zip ] }
+            .collect()
+            .set { ch_fqc_mqc }
+
+
+        FLYE_ASSEMBLE( ch_processed_reads )
+
+        // Filter out reads for which flye assembly failed
         ch_processed_reads
-            .join( MEGAHIT_ASSEMBLE.out.assembly )
+            .join( FLYE_ASSEMBLE.out.assembly )
             .map { meta, reads, asm -> [meta, reads] }
             .tap { ch_strata_reads }
             .set { ch_processed_reads }
@@ -150,7 +189,7 @@ workflow MAGGIC {
         // Multi-sample binning
         if (!params.multi_sample_strata) {
             ch_processed_reads
-                .combine( MEGAHIT_ASSEMBLE.out.assembly )
+                .combine( FLYE_ASSEMBLE.out.assembly )
                 // .map { meta, reads, asm_meta, asm ->
                 //     // def new_meta = meta + [id: "${meta.id}_v_${meta2.id}"]
                 //     [meta, reads, asm_meta, asm]
@@ -175,7 +214,7 @@ workflow MAGGIC {
                         indices.collect { idx -> all_reads[idx] }
                     }
                 }
-                .combine( MEGAHIT_ASSEMBLE.out.assembly )
+                .combine( FLYE_ASSEMBLE.out.assembly )
                 .set { ch_mapping_all_v_all }
             
             // ch_mapping_all_v_all.subscribe( onComplete: { 
@@ -185,7 +224,7 @@ workflow MAGGIC {
 
             // This is asynchronous, but not sure if cache is not invalidated
             // ch_strata_reads
-            //     .combine( MEGAHIT_ASSEMBLE.out.assembly )
+            //     .combine( FLYE_ASSEMBLE.out.assembly )
             //     .groupTuple( by: 2, size: strata_size.toInteger(), remainder: true )
             //     .flatMap { read_metas, reads_list, asm_meta, asm ->
             //         [ read_metas, reads_list ]
@@ -211,22 +250,22 @@ workflow MAGGIC {
             .set { ch_mm2_all_aligned_bai }
 
         VAMB_BIN_DEF(
-            MEGAHIT_ASSEMBLE.out.assembly
+            FLYE_ASSEMBLE.out.assembly
             .join( ch_mm2_all_aligned )
         )
 
         SEMIBIN2_SEB(
-            MEGAHIT_ASSEMBLE.out.assembly
+            FLYE_ASSEMBLE.out.assembly
                 .join( ch_mm2_all_aligned )
         )
 
         METABAT2(
-            MEGAHIT_ASSEMBLE.out.assembly
+            FLYE_ASSEMBLE.out.assembly
                 .join( ch_mm2_all_aligned )
                 .join( ch_mm2_all_aligned_bai )
         )
 
-        MEGAHIT_ASSEMBLE.out.assembly
+        FLYE_ASSEMBLE.out.assembly
             .join( VAMB_BIN_DEF.out.bins, remainder: true )
             .join( SEMIBIN2_SEB.out.bins, remainder: true )
             .join( METABAT2.out.bins, remainder: true )
@@ -469,8 +508,8 @@ workflow MAGGIC {
         DUMP_SOFTWARE_VERSIONS (
             software_versions
                 .mix(
-                    FASTP.out.versions.ifEmpty(null),
-                    MEGAHIT_ASSEMBLE.out.versions.ifEmpty(null),
+                    FILTLONG.out.versions.ifEmpty(null),
+                    FLYE_ASSEMBLE.out.versions.ifEmpty(null),
                     MINIMAP2_ALIGN.out.versions.ifEmpty(null),
                     VAMB_BIN_DEF.out.versions.ifEmpty(null),
                     SEMIBIN2_SEB.out.versions.ifEmpty(null),
@@ -491,7 +530,8 @@ workflow MAGGIC {
             ch_multiqc
                 .mix(
                     TABLE_SUMMARY.out.mqc_yml,
-                    DUMP_SOFTWARE_VERSIONS.out.mqc_yml
+                    DUMP_SOFTWARE_VERSIONS.out.mqc_yml,
+                    ch_fqc_mqc
                 )
                 .collect( sort: true )
         )
@@ -537,13 +577,12 @@ def checkMetadataExists(file_path, msg) {
 def help() {
 
     Map helptext = [:]
-    Map fastpAdapterHelp = [:]
     Map nH = [:]
     def uHelp = (params.help.getClass().toString() =~ /String/ ? params.help.tokenize(',').join(' ') : '')
 
     Map defaultHelp = [
-        '--help fastp'                  : 'Show fastp CLI options',
-        '--help megahit'                : 'Show megahit CLI options',
+        '--help filtlong'               : 'Show filtlong CLI options',
+        '--help flye'                   : 'Show flye CLI options',
         '--help minimap2'               : 'Show minimap2 CLI options',
         '--help seb'                    : 'Show SemiBin2 `single_easy_bin` CLI options',
         '--help vamb'                   : 'Show vamb `bin def` CLI options',
@@ -554,26 +593,21 @@ def help() {
         '--help metabat2'               : 'Show metabat2 CLI options'
     ]
 
-    fastpAdapterHelp['--fastp_use_custom_adapaters'] = "Use custom adapter FASTA with fastp on top of " +
-        "built-in adapter sequence auto-detection. Enabling this option will attempt to find and remove " +
-        "all possible Illumina adapter and primer sequences but will make the workflow run slow. " +
-        "Default: ${params.fastp_use_custom_adapters}"
-
     if (params.help.getClass().toString() =~ /Boolean/ || uHelp.size() == 0) {
-        println conciseHelp('fastp,megahit')
+        println conciseHelp('filtlong,flye')
         helptext.putAll(defaultHelp)
     } else {
         params.help.tokenize(',').each { h ->
             if (defaultHelp.keySet().findAll{ it =~ /(?i)\b${h}\b/ }.size() == 0) {
-                println conciseHelp('fastp,megahit')
+                println conciseHelp('filtlong,flye')
                 stopNow("Tool [ ${h} ] is not a part of ${params.pipeline} pipeline.")
             }
         }
 
         helptext.putAll(
             fastqEntryPointHelp() +
-            (uHelp =~ /(?i)\bfastp/ ? fastpHelp(params).text + fastpAdapterHelp : nH) +
-            (uHelp =~ /(?i)\bmegahit/ ? megahitHelp(params).text : nH) +
+            (uHelp =~ /(?i)\bfiltlong/ ? filtlongHelp(params).text : nH) +
+            (uHelp =~ /(?i)\bflye/ ? flyeHelp(params).text : nH) +
             (uHelp =~ /(?i)\bseb/ ? semibin2sebHelp(params).text : nH) +
             (uHelp =~ /(?i)\bvamb/ ? vambbindefHelp(params).text : nH) +
             (uHelp =~ /(?i)\bbinette/ ? binetteHelp(params).text : nH) +

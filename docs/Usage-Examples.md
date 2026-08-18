@@ -13,7 +13,7 @@ nextflow info CFSAN-Biostatistics/maggic
 nextflow run CFSAN-Biostatistics/maggic --pipeline maggic --help
 ```
 
-## Default Run
+## Default Run (Short-Read)
 
 ```bash
 cd /data/scratch/$USER
@@ -27,7 +27,18 @@ cd nf-maggic
     -resume
 ```
 
-## Single-End Mode
+## Long-Read Mode
+
+```bash
+./cpipes \
+    --pipeline maggic_lr \
+    --input /path/to/nanopore/fastq/dir \
+    --output /path/to/output \
+    -profile ahptainer \
+    -resume
+```
+
+## Single-End Mode (Short-Read)
 
 ```bash
 ./cpipes \
@@ -61,12 +72,15 @@ All FASTQ files should have uniform naming patterns.
 
 ## Output Directory Structure
 
-All outputs are stored in the `--output` path. The MultiQC report is at `maggic-multiqc/CPIPES-Report_multiqc_report.html`.
+All outputs are stored in the `--output` path. The MultiQC report is at `maggic-multiqc/CPIPES-Report_multiqc_report.html` (or `maggic_lr-multiqc/CPIPES-Report_multiqc_report.html` for long reads).
 
 | Directory | Description |
 |-----------|-------------|
-| `fastp/` | Quality-filtered FASTQ and JSON reports |
-| `megahit/` | Metagenome assemblies (FASTA contigs) |
+| `fastp/` | Quality-filtered short-read FASTQ and JSON reports |
+| `filtlong/` | Quality-filtered long-read FASTQ |
+| `fastqc/` | Long-read quality control reports |
+| `megahit/` | Metagenome assemblies (short-read FASTA contigs) |
+| `flye/` | Metagenome assemblies (long-read FASTA contigs) |
 | `minimap2/` | Alignment BAM files |
 | `vamb/` | `VAMB` binning output |
 | `semibin2/` | `SemiBin2` binning output |
@@ -78,4 +92,5 @@ All outputs are stored in the `--output` path. The MultiQC report is at `maggic-
 | `coverm_genome/` | Abundance/coverage tables |
 | `maggic_results/` | Aggregated results TSVs |
 | `table_summary/` | Summary tables |
-| `maggic-multiqc/` | **MultiQC** HTML report |
+| `maggic-multiqc/` | **MultiQC** HTML report (short-read) |
+| `maggic_lr-multiqc/` | **MultiQC** HTML report (long-read) |

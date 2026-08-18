@@ -9,7 +9,9 @@ Show per-tool CLI options with `--help <tool>`:
 | Flag | Tool |
 |------|------|
 | `--help fastp` | fastp quality filtering options |
+| `--help filtlong` | Filtlong quality filtering options (maggic_lr) |
 | `--help megahit` | MEGAHIT assembly options |
+| `--help flye` | Flye assembly options (maggic_lr) |
 | `--help minimap2` | Minimap2 alignment options |
 | `--help seb` | SemiBin2 `single_easy_bin` options |
 | `--help vamb` | VAMB `bin def` options |
@@ -22,14 +24,21 @@ Show per-tool CLI options with `--help <tool>`:
 ## Examples
 
 ```bash
-# Show all tool help flags
+# Show all tool help flags (short-read)
 ./cpipes --pipeline maggic --help
 
-# Show fastp options
+# Show all tool help flags (long-read)
+./cpipes --pipeline maggic_lr --help
+
+# Show fastp options (short-read only)
 ./cpipes --pipeline maggic --help fastp
+
+# Show filtlong options (long-read only)
+./cpipes --pipeline maggic_lr --help filtlong
 
 # Show multiple tools
 ./cpipes --pipeline maggic --help fastp,megahit
+./cpipes --pipeline maggic_lr --help filtlong,flye
 ```
 
 ## Full Help Output
@@ -64,8 +73,10 @@ Ex: cpipes --pipeline maggic --help
 Ex: cpipes --pipeline maggic --help fastp
 Ex: cpipes --pipeline maggic --help fastp,megahit
 ----------------------------------------------------------------------------------------------------
---help fastp                                           : Show fastp CLI options
---help megahit                                         : Show megahit CLI options
+--help fastp                                           : Show fastp CLI options (maggic only)
+--help filtlong                                        : Show filtlong CLI options (maggic_lr only)
+--help megahit                                         : Show megahit CLI options (maggic only)
+--help flye                                            : Show flye CLI options (maggic_lr only)
 --help minimap2                                        : Show minimap2 CLI options
 --help seb                                             : Show SemiBin2 `single_easy_bin` CLI options
 --help vamb                                            : Show vamb `bin def` CLI options
